@@ -1,0 +1,15 @@
+server:
+  port: 9032
+spring:
+  cloud:
+    gateway:
+      routes:
+        - id: onair-article-service
+          uri: http://localhost:9030
+          predicates:
+            - Path=/v1/article/**
+
+        - id: onair-member-service
+          uri: http://localhost:9031
+          predicates:
+            - Path=/v1/member/**

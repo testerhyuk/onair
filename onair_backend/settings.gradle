@@ -2,6 +2,10 @@ rootProject.name = 'onair_backend'
 
 include ':service'
 include ':service:article'
+include ':service:member'
+
+include 'gateway'
 
 include ':common'
 include ':common:snowflake'
+include ':common:jwt'

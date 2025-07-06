@@ -1,0 +1,22 @@
+server:
+  port: 9031
+spring:
+  application:
+    name: onair-member-service
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://127.0.0.1:3308/member
+    username: ${MYSQL_ROOT_USERNAME}
+    password: ${MYSQL_ROOT_PASSWORD}
+  jpa:
+    database-platform: org.hibernate.dialect.MySQLDialect
+    open-in-view: false
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+  data:
+    redis:
+      host: 127.0.0.1
+      port: 6433
+jwt:
+  secret-key: ${JWT_SECRET_KEY}
