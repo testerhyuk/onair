@@ -15,6 +15,7 @@ import onair.snowflake.Snowflake;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Duration;
 
@@ -28,6 +29,7 @@ public class MemberService {
     private final RefreshTokenService refreshTokenService;
     private final StringRedisTemplate redisTemplate;
 
+    @Transactional
     public SignUpResponse register(SignUpRequest request) {
         String key = "withdrawn:" + request.getEmail();
 
@@ -76,6 +78,7 @@ public class MemberService {
         return LoginResponse.of(member, accessToken, refreshToken);
     }
 
+    @Transactional
     public MemberUpdateResponse update(String email, MemberUpdateRequest request) {
         Member member = memberRepository.findByEmailAndDeleted(email).orElseThrow();
 
@@ -85,6 +88,7 @@ public class MemberService {
         return MemberUpdateResponse.of(member);
     }
 
+    @Transactional
     public void withdraw(String email) {
         Member member = memberRepository.findByEmailAndDeleted(email).orElseThrow();
 
