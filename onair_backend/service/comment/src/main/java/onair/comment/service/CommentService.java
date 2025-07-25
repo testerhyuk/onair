@@ -62,7 +62,7 @@ public class CommentService {
     }
 
     private boolean hasChildren(Comment comment) {
-        return commentRepository.countBy(comment.getArticleId(), comment.getParentCommentId(), 2L) == 2;
+        return commentRepository.countBy(comment.getArticleId(), comment.getCommentId(), 2L) == 2;
     }
 
     private void deleteComment(Comment comment) {
