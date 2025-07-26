@@ -4,6 +4,7 @@ include ':service'
 include ':service:article'
 include ':service:member'
 include ':service:comment'
+include ':service:articleLike'
 
 include 'gateway'
 
