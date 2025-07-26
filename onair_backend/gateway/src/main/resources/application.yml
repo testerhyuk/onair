@@ -13,3 +13,8 @@ spring:
           uri: http://localhost:9031
           predicates:
             - Path=/v1/member/**
+
+        - id: onair-comment-service
+          uri: http://localhost:9033
+          predicates:
+            - Path=/v1/comment/**

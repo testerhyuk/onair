@@ -10,6 +10,8 @@ import onair.snowflake.Snowflake;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 import static java.util.function.Predicate.not;
 
 @Service
@@ -26,7 +28,7 @@ public class CommentService {
                 Comment.create(
                         snowflake.nextId(),
                         request.getArticleId(),
-                        parent == null ? null : request.getParentCommentId(),
+                        parent == null ? null : parent.getCommentId(),
                         request.getUserId(),
                         request.getContent()
                 )
@@ -87,5 +89,13 @@ public class CommentService {
                 .filter(not(Comment::isDeleted))
                 .filter(Comment::isRoot)
                 .orElseThrow();
+    }
+
+    public List<CommentResponse> readAll(Long articleId, Long lastParentCommentId, Long lastCommentId, Long limit) {
+        List<Comment> comments = lastParentCommentId == null || lastCommentId == null ?
+                commentRepository.findAllInfiniteScroll(articleId, limit) :
+                commentRepository.findAllInfiniteScroll(articleId, lastParentCommentId, lastCommentId, limit);
+
+        return comments.stream().map(CommentResponse::from).toList();
     }
 }
