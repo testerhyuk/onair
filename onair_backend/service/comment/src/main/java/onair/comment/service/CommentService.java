@@ -2,6 +2,8 @@ package onair.comment.service;
 
 import lombok.RequiredArgsConstructor;
 import onair.comment.entity.Comment;
+import onair.comment.entity.CommentCount;
+import onair.comment.repository.CommentCountRepository;
 import onair.comment.repository.CommentRepository;
 import onair.comment.service.reqeust.CommentCreateRequest;
 import onair.comment.service.reqeust.CommentUpdateRequest;
@@ -18,6 +20,7 @@ import static java.util.function.Predicate.not;
 @RequiredArgsConstructor
 public class CommentService {
     private final CommentRepository commentRepository;
+    private final CommentCountRepository commentCountRepository;
     private final Snowflake snowflake = new Snowflake();
 
     @Transactional
@@ -33,6 +36,14 @@ public class CommentService {
                         request.getContent()
                 )
         );
+
+        int result = commentCountRepository.increase(request.getArticleId());
+
+        if (result == 0) {
+            commentCountRepository.save(
+                    CommentCount.init(request.getArticleId(), 1L)
+            );
+        }
 
         return CommentResponse.from(comment);
     }
@@ -70,6 +81,8 @@ public class CommentService {
     private void deleteComment(Comment comment) {
         commentRepository.delete(comment);
 
+        commentCountRepository.decrease(comment.getArticleId());
+
         if (!comment.isRoot()) {
             commentRepository.findById(comment.getParentCommentId())
                     .filter(Comment::isDeleted)
@@ -97,5 +110,11 @@ public class CommentService {
                 commentRepository.findAllInfiniteScroll(articleId, lastParentCommentId, lastCommentId, limit);
 
         return comments.stream().map(CommentResponse::from).toList();
+    }
+
+    public Long count(Long articleId) {
+        return commentCountRepository.findById(articleId)
+                .map(CommentCount::getArticleCommentCount)
+                .orElse(0L);
     }
 }
