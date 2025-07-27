@@ -2,11 +2,18 @@ package onair.article.service;
 
 import lombok.RequiredArgsConstructor;
 import onair.article.entity.Article;
+import onair.article.entity.BoardArticleCount;
 import onair.article.repository.ArticleRepository;
+import onair.article.repository.BoardArticleCountRepository;
 import onair.article.service.request.ArticleCreateRequestDto;
 import onair.article.service.request.ArticleUpdateRequestDto;
 import onair.article.service.response.ArticleResponse;
 import onair.snowflake.Snowflake;
+import org.springframework.dao.CannotAcquireLockException;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.PessimisticLockingFailureException;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,8 +23,14 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ArticleService {
     private final ArticleRepository articleRepository;
+    private final BoardArticleCountRepository boardArticleCountRepository;
     private final Snowflake snowflake = new Snowflake();
 
+    @Retryable(
+            value = {CannotAcquireLockException.class, PessimisticLockingFailureException.class},
+            maxAttempts = 5,
+            backoff = @Backoff(delay = 100)
+    )
     @Transactional
     public ArticleResponse create(ArticleCreateRequestDto dto) {
         Article article = articleRepository.save(Article.create(
@@ -28,6 +41,12 @@ public class ArticleService {
                 dto.getContent()
                 )
         );
+
+        BoardArticleCount boardArticleCount = boardArticleCountRepository.findLockedByBoardId(dto.getBoardId())
+                .orElseGet(() -> BoardArticleCount.init(dto.getBoardId(), 0L));
+
+        boardArticleCount.increase();
+        boardArticleCountRepository.save(boardArticleCount);
 
         return ArticleResponse.from(article);
     }
@@ -43,7 +62,14 @@ public class ArticleService {
 
     @Transactional
     public void delete(Long articleId) {
-        articleRepository.deleteById(articleId);
+        Article article = articleRepository.findById(articleId).orElseThrow();
+        articleRepository.delete(article);
+
+        boardArticleCountRepository.findLockedByBoardId(article.getBoardId())
+                .ifPresent(boardArticleCount -> {
+                    boardArticleCount.decrease();
+                    boardArticleCountRepository.save(boardArticleCount);
+                });
     }
 
     public ArticleResponse read(Long articleId) {
@@ -58,5 +84,11 @@ public class ArticleService {
                 articleRepository.findAllArticle(boardId, limit, lastArticleId);
 
         return articles.stream().map(ArticleResponse::from).toList();
+    }
+
+    public Long count(Long boardId) {
+        return boardArticleCountRepository.findById(boardId)
+                .map(BoardArticleCount::getArticleCount)
+                .orElse(0L);
     }
 }

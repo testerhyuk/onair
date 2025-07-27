@@ -41,4 +41,9 @@ public class ArticleController {
                                          @RequestParam(value = "lastArticleId", required = false) Long lastArticleId) {
         return articleService.readAll(boardId, pageSize, lastArticleId);
     }
+
+    @GetMapping("/v1/article/boards/{boardId}/count")
+    public Long count(@PathVariable("boardId") Long boardId) {
+        return articleService.count(boardId);
+    }
 }
