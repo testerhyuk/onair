@@ -6,9 +6,12 @@ include ':service:member'
 include ':service:comment'
 include ':service:articleLike'
 include ':service:articleView'
+include ':service:hot-article'
 
 include 'gateway'
 
 include ':common'
 include ':common:snowflake'
 include ':common:jwt'
+include 'common:data-serializer'
+include 'common:event'

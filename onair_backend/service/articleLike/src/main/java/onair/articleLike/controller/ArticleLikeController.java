@@ -1,14 +1,14 @@
 package onair.articleLike.controller;
 
 import lombok.RequiredArgsConstructor;
-import onair.articleLike.service.ArticleService;
+import onair.articleLike.service.ArticleLikeService;
 import onair.articleLike.service.response.ArticleLikeResponse;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
 public class ArticleLikeController {
-    private final ArticleService articleService;
+    private final ArticleLikeService articleService;
 
     @GetMapping("/v1/article-like/articles/{articleId}/users/{userId}")
     public ArticleLikeResponse read(
@@ -32,5 +32,10 @@ public class ArticleLikeController {
             @PathVariable("userId") Long userId
     ) {
         articleService.unlike(articleId, userId);
+    }
+
+    @GetMapping("/v1/article-like/articles/{articleId}/count")
+    public Long count(@PathVariable("articleId") Long articleId) {
+        return articleService.count(articleId);
     }
 }

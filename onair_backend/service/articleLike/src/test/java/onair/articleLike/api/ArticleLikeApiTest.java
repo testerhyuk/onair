@@ -5,6 +5,12 @@ import onair.articleLike.service.response.ArticleLikeResponse;
 import org.junit.jupiter.api.Test;
 import org.springframework.web.client.RestClient;
 
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
+import static org.junit.jupiter.api.Assertions.fail;
+
 @Log4j2
 public class ArticleLikeApiTest {
     RestClient restClient = RestClient.create("http://localhost:9034");

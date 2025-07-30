@@ -27,7 +27,7 @@ public class ArticleService {
     private final Snowflake snowflake = new Snowflake();
 
     @Retryable(
-            value = {CannotAcquireLockException.class, PessimisticLockingFailureException.class},
+            retryFor = {CannotAcquireLockException.class, PessimisticLockingFailureException.class},
             maxAttempts = 5,
             backoff = @Backoff(delay = 100)
     )
