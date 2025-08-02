@@ -64,7 +64,7 @@ public class DataInitializer {
                         1L,
                         "title" + i,
                         "content",
-                        Category.ELECTRONICS
+                        Category.POLITICS
                 );
 
                 entityManager.persist(article);

@@ -26,7 +26,7 @@ public class ArticleApiTest {
     @Test
     void createTest() {
         ArticleResponse response = create(new ArticleCreateRequestDto(
-                1L, 1L, "test title with category", "test content with category", "ELECTRONICS"
+                1L, 1L, "test title with category", "test content with category", "POLITICS"
         ));
 
         log.info("response = {}", response);
@@ -44,7 +44,7 @@ public class ArticleApiTest {
     void updateTest() {
         Long articleId = 132271061575491584L;
         ArticleResponse response = update(articleId, new ArticleUpdateRequestDto(
-                "update title", "update content", "ETC"
+                "update title", "update content", "WORLD"
         ));
 
         log.info("response = {}", response);
@@ -111,7 +111,7 @@ public class ArticleApiTest {
 
     @Test
     void countTest() {
-        ArticleResponse response = create(new ArticleCreateRequestDto(1L, 2L, "title1", "content1", "ELECTRONICS"));
+        ArticleResponse response = create(new ArticleCreateRequestDto(1L, 2L, "title1", "content1", "POLITICS"));
 
         Long count1 = restClient.get()
                 .uri("/v1/article/boards/{boardId}/count", 2L)
@@ -146,7 +146,7 @@ public class ArticleApiTest {
 
             executorService.execute(() -> {
                 try {
-                    create(new ArticleCreateRequestDto(userId, boardId, "concurrency test", "concurrency content", "ELECTRONICS"));
+                    create(new ArticleCreateRequestDto(userId, boardId, "concurrency test", "concurrency content", "POLITICS"));
                 } finally {
                     latch.countDown();
                 }
@@ -168,7 +168,7 @@ public class ArticleApiTest {
     @Test
     void readByCategory() {
         List<ArticleResponse> responses = restClient.get()
-                .uri("/v1/article/category?category=ELECTRONICS")
+                .uri("/v1/article/category?category=POLITICS")
                 .retrieve()
                 .body(new ParameterizedTypeReference<List<ArticleResponse>>() {});
 
@@ -192,7 +192,7 @@ public class ArticleApiTest {
     @Test
     void searchCategoryAndTitle() {
         List<ArticleResponse> responses = restClient.get()
-                .uri("/v1/article/search?category=ELECTRONICS&keyword=test")
+                .uri("/v1/article/search?category=POLITICS&keyword=test")
                 .retrieve()
                 .body(new ParameterizedTypeReference<List<ArticleResponse>>() {});
 
