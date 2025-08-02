@@ -39,3 +39,6 @@ out/
 ### .env ###
 .env
 /java_pid14508.hprof
+
+*.iml
+.idea/
