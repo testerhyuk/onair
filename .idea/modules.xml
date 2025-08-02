@@ -3,6 +3,25 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/onair.iml" filepath="$PROJECT_DIR$/.idea/onair.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/common/data-serializer/onair_backend.common.data-serializer.main.iml" filepath="$PROJECT_DIR$/.idea/modules/common/data-serializer/onair_backend.common.data-serializer.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/common/event/onair_backend.common.event.main.iml" filepath="$PROJECT_DIR$/.idea/modules/common/event/onair_backend.common.event.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/common/event/onair_backend.common.event.test.iml" filepath="$PROJECT_DIR$/.idea/modules/common/event/onair_backend.common.event.test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/common/jwt/onair_backend.common.jwt.main.iml" filepath="$PROJECT_DIR$/.idea/modules/common/jwt/onair_backend.common.jwt.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/common/outbox-message-relay/onair_backend.common.outbox-message-relay.main.iml" filepath="$PROJECT_DIR$/.idea/modules/common/outbox-message-relay/onair_backend.common.outbox-message-relay.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/common/snowflake/onair_backend.common.snowflake.main.iml" filepath="$PROJECT_DIR$/.idea/modules/common/snowflake/onair_backend.common.snowflake.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/gateway/onair_backend.gateway.main.iml" filepath="$PROJECT_DIR$/.idea/modules/gateway/onair_backend.gateway.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/service/article/onair_backend.service.article.main.iml" filepath="$PROJECT_DIR$/.idea/modules/service/article/onair_backend.service.article.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/service/article/onair_backend.service.article.test.iml" filepath="$PROJECT_DIR$/.idea/modules/service/article/onair_backend.service.article.test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/service/articleLike/onair_backend.service.articleLike.main.iml" filepath="$PROJECT_DIR$/.idea/modules/service/articleLike/onair_backend.service.articleLike.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/service/articleLike/onair_backend.service.articleLike.test.iml" filepath="$PROJECT_DIR$/.idea/modules/service/articleLike/onair_backend.service.articleLike.test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/service/articleView/onair_backend.service.articleView.main.iml" filepath="$PROJECT_DIR$/.idea/modules/service/articleView/onair_backend.service.articleView.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/service/articleView/onair_backend.service.articleView.test.iml" filepath="$PROJECT_DIR$/.idea/modules/service/articleView/onair_backend.service.articleView.test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/service/comment/onair_backend.service.comment.main.iml" filepath="$PROJECT_DIR$/.idea/modules/service/comment/onair_backend.service.comment.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/service/comment/onair_backend.service.comment.test.iml" filepath="$PROJECT_DIR$/.idea/modules/service/comment/onair_backend.service.comment.test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/service/hot-article/onair_backend.service.hot-article.main.iml" filepath="$PROJECT_DIR$/.idea/modules/service/hot-article/onair_backend.service.hot-article.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/service/hot-article/onair_backend.service.hot-article.test.iml" filepath="$PROJECT_DIR$/.idea/modules/service/hot-article/onair_backend.service.hot-article.test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/service/member/onair_backend.service.member.main.iml" filepath="$PROJECT_DIR$/.idea/modules/service/member/onair_backend.service.member.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/service/member/onair_backend.service.member.test.iml" filepath="$PROJECT_DIR$/.idea/modules/service/member/onair_backend.service.member.test.iml" />
     </modules>
   </component>
 </project>

@@ -9,6 +9,20 @@
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$/onair_backend" />
+            <option value="$PROJECT_DIR$/onair_backend/common" />
+            <option value="$PROJECT_DIR$/onair_backend/common/data-serializer" />
+            <option value="$PROJECT_DIR$/onair_backend/common/event" />
+            <option value="$PROJECT_DIR$/onair_backend/common/jwt" />
+            <option value="$PROJECT_DIR$/onair_backend/common/outbox-message-relay" />
+            <option value="$PROJECT_DIR$/onair_backend/common/snowflake" />
+            <option value="$PROJECT_DIR$/onair_backend/gateway" />
+            <option value="$PROJECT_DIR$/onair_backend/service" />
+            <option value="$PROJECT_DIR$/onair_backend/service/article" />
+            <option value="$PROJECT_DIR$/onair_backend/service/articleLike" />
+            <option value="$PROJECT_DIR$/onair_backend/service/articleView" />
+            <option value="$PROJECT_DIR$/onair_backend/service/comment" />
+            <option value="$PROJECT_DIR$/onair_backend/service/hot-article" />
+            <option value="$PROJECT_DIR$/onair_backend/service/member" />
           </set>
         </option>
       </GradleProjectSettings>

@@ -5,9 +5,38 @@
       <profile name="Gradle Imported" enabled="true">
         <outputRelativeToContentRoot value="true" />
         <processorPath useClasspath="false">
-          <entry name="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.projectlombok/lombok/1.18.38/57f8f5e02e92a30fd21b80cbd426a4172b5f8e29/lombok-1.18.38.jar" />
+          <entry name="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.projectlombok/lombok/1.18.32/17d46b3e205515e1e8efd3ee4d57ce8018914163/lombok-1.18.32.jar" />
         </processorPath>
+        <module name="onair_backend.gateway.main" />
+        <module name="onair_backend.common.test" />
+        <module name="onair_backend.common.event.test" />
+        <module name="onair_backend.service.articleView.main" />
+        <module name="onair_backend.service.main" />
+        <module name="onair_backend.common.snowflake.test" />
+        <module name="onair_backend.common.event.main" />
+        <module name="onair_backend.service.article.main" />
+        <module name="onair_backend.service.comment.main" />
+        <module name="onair_backend.service.hot-article.main" />
+        <module name="onair_backend.common.main" />
+        <module name="onair_backend.common.outbox-message-relay.main" />
+        <module name="onair_backend.common.jwt.test" />
+        <module name="onair_backend.test" />
+        <module name="onair_backend.service.test" />
+        <module name="onair_backend.common.data-serializer.test" />
+        <module name="onair_backend.service.member.main" />
+        <module name="onair_backend.common.jwt.main" />
+        <module name="onair_backend.service.articleLike.test" />
+        <module name="onair_backend.service.article.test" />
+        <module name="onair_backend.service.hot-article.test" />
+        <module name="onair_backend.service.comment.test" />
+        <module name="onair_backend.common.snowflake.main" />
+        <module name="onair_backend.service.articleView.test" />
+        <module name="onair_backend.common.data-serializer.main" />
         <module name="onair_backend.main" />
+        <module name="onair_backend.service.member.test" />
+        <module name="onair_backend.common.outbox-message-relay.test" />
+        <module name="onair_backend.service.articleLike.main" />
+        <module name="onair_backend.gateway.test" />
       </profile>
     </annotationProcessing>
   </component>
