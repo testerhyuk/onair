@@ -4,5 +4,7 @@ dependencies {
     runtimeOnly 'com.mysql:mysql-connector-j'
     implementation 'org.springframework.retry:spring-retry'
 
+    implementation project(':common:outbox-message-relay')
+    implementation project(':common:event')
     implementation project(':common:snowflake')
 }

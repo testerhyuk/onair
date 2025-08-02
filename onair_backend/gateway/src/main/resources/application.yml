@@ -18,3 +18,18 @@ spring:
           uri: http://localhost:9033
           predicates:
             - Path=/v1/comment/**
+
+        - id: onair-like-service
+          uri: http://localhost:9034
+          predicates:
+            - Path=/v1/article-like/**
+
+        - id: onair-view-service
+          uri: http://localhost:9035
+          predicates:
+            - Path=/v1/article-views/**
+
+        - id: onair-hot-article-service
+          uri: http://localhost:9036
+          predicates:
+            - Path=/v1/hot-articles/**

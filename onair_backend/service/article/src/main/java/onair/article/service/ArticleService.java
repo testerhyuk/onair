@@ -8,6 +8,11 @@ import onair.article.repository.BoardArticleCountRepository;
 import onair.article.service.request.ArticleCreateRequestDto;
 import onair.article.service.request.ArticleUpdateRequestDto;
 import onair.article.service.response.ArticleResponse;
+import onair.event.EventType;
+import onair.event.payload.ArticleCreatedEventPayload;
+import onair.event.payload.ArticleDeletedEventPayload;
+import onair.event.payload.ArticleUpdatedEventPayload;
+import onair.outboxmessagerelay.OutboxEventPublisher;
 import onair.snowflake.Snowflake;
 import org.springframework.dao.CannotAcquireLockException;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -25,6 +30,7 @@ public class ArticleService {
     private final ArticleRepository articleRepository;
     private final BoardArticleCountRepository boardArticleCountRepository;
     private final Snowflake snowflake = new Snowflake();
+    private final OutboxEventPublisher outboxEventPublisher;
 
     @Retryable(
             retryFor = {CannotAcquireLockException.class, PessimisticLockingFailureException.class},
@@ -48,6 +54,21 @@ public class ArticleService {
         boardArticleCount.increase();
         boardArticleCountRepository.save(boardArticleCount);
 
+        outboxEventPublisher.publish(
+                EventType.ARTICLE_CREATED,
+                ArticleCreatedEventPayload.builder()
+                        .articleId(article.getArticleId())
+                        .title(article.getTitle())
+                        .content(article.getContent())
+                        .boardId(article.getBoardId())
+                        .userId(article.getUserId())
+                        .createdAt(article.getCreatedAt())
+                        .modifiedAt(article.getModifiedAt())
+                        .articleCount(count(article.getBoardId()))
+                        .build(),
+                article.getBoardId()
+        );
+
         return ArticleResponse.from(article);
     }
 
@@ -56,6 +77,20 @@ public class ArticleService {
         Article article = articleRepository.findById(articleId).orElseThrow();
 
         article.update(dto.getTitle(), dto.getContent());
+
+        outboxEventPublisher.publish(
+                EventType.ARTICLE_UPDATED,
+                ArticleUpdatedEventPayload.builder()
+                        .articleId(article.getArticleId())
+                        .title(article.getTitle())
+                        .content(article.getContent())
+                        .boardId(article.getBoardId())
+                        .userId(article.getUserId())
+                        .createdAt(article.getCreatedAt())
+                        .modifiedAt(article.getModifiedAt())
+                        .build(),
+                article.getBoardId()
+        );
 
         return ArticleResponse.from(article);
     }
@@ -70,6 +105,21 @@ public class ArticleService {
                     boardArticleCount.decrease();
                     boardArticleCountRepository.save(boardArticleCount);
                 });
+
+        outboxEventPublisher.publish(
+                EventType.ARTICLE_DELETED,
+                ArticleDeletedEventPayload.builder()
+                        .articleId(article.getArticleId())
+                        .title(article.getTitle())
+                        .content(article.getContent())
+                        .boardId(article.getBoardId())
+                        .userId(article.getUserId())
+                        .createdAt(article.getCreatedAt())
+                        .modifiedAt(article.getModifiedAt())
+                        .articleCount(count(article.getBoardId()))
+                        .build(),
+                article.getBoardId()
+        );
     }
 
     public ArticleResponse read(Long articleId) {

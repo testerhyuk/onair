@@ -2,7 +2,7 @@ server:
   port: 9035
 spring:
   application:
-    name: livemarket-view-service
+    name: onair-view-service
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://127.0.0.1:3308/article_view
@@ -18,3 +18,5 @@ spring:
     redis:
       host: 127.0.0.1
       port: 6433
+  kafka:
+    bootstrap-servers: 127.0.0.1:9092

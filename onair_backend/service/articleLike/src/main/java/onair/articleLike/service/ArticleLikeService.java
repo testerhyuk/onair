@@ -6,6 +6,11 @@ import onair.articleLike.entity.ArticleLikeCount;
 import onair.articleLike.repository.ArticleLikeCountRepository;
 import onair.articleLike.repository.ArticleLikeRepository;
 import onair.articleLike.service.response.ArticleLikeResponse;
+import onair.event.EventType;
+import onair.event.payload.ArticleLikedEventPayload;
+import onair.event.payload.ArticleUnlikedEventPayload;
+import onair.event.payload.CommentCreatedEventPayload;
+import onair.outboxmessagerelay.OutboxEventPublisher;
 import onair.snowflake.Snowflake;
 
 import org.springframework.stereotype.Service;
@@ -17,10 +22,11 @@ public class ArticleLikeService {
     private final ArticleLikeRepository articleLikeRepository;
     private final ArticleLikeCountRepository articleLikeCountRepository;
     private final Snowflake snowflake = new Snowflake();
+    private final OutboxEventPublisher outboxEventPublisher;
 
     @Transactional
     public void like(Long articleId, Long userId) {
-        articleLikeRepository.save(
+        ArticleLike articleLike = articleLikeRepository.save(
                 ArticleLike.create(
                         snowflake.nextId(),
                         articleId,
@@ -33,6 +39,18 @@ public class ArticleLikeService {
 
         articleLikeCount.increase();
         articleLikeCountRepository.save(articleLikeCount);
+
+        outboxEventPublisher.publish(
+                EventType.ARTICLE_LIKED,
+                ArticleLikedEventPayload.builder()
+                        .articleLikeId(articleLike.getArticleLikeId())
+                        .articleId(articleLike.getArticleId())
+                        .userId(articleLike.getUserId())
+                        .createdAt(articleLike.getCreatedAt())
+                        .likeCount(count(articleLike.getArticleId()))
+                        .build(),
+                articleLike.getArticleId()
+        );
     }
 
     @Transactional
@@ -48,6 +66,18 @@ public class ArticleLikeService {
                     articleLikeCount.decrease();
 
                     articleLikeCountRepository.save(articleLikeCount);
+
+                    outboxEventPublisher.publish(
+                            EventType.ARTICLE_UNLIKED,
+                            ArticleUnlikedEventPayload.builder()
+                                    .articleLikeId(articleLike.getArticleLikeId())
+                                    .articleId(articleLike.getArticleId())
+                                    .userId(articleLike.getUserId())
+                                    .createdAt(articleLike.getCreatedAt())
+                                    .likeCount(count(articleLike.getArticleId()))
+                                    .build(),
+                            articleLike.getArticleId()
+                    );
                 });
     }
 
