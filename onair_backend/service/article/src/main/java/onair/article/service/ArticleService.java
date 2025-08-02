@@ -3,6 +3,7 @@ package onair.article.service;
 import lombok.RequiredArgsConstructor;
 import onair.article.entity.Article;
 import onair.article.entity.BoardArticleCount;
+import onair.article.entity.Category;
 import onair.article.repository.ArticleRepository;
 import onair.article.repository.BoardArticleCountRepository;
 import onair.article.service.request.ArticleCreateRequestDto;
@@ -44,7 +45,8 @@ public class ArticleService {
                 dto.getBoardId(),
                 dto.getUserId(),
                 dto.getTitle(),
-                dto.getContent()
+                dto.getContent(),
+                Category.valueOf(dto.getCategory())
                 )
         );
 
@@ -62,6 +64,7 @@ public class ArticleService {
                         .content(article.getContent())
                         .boardId(article.getBoardId())
                         .userId(article.getUserId())
+                        .category(String.valueOf(article.getCategory()))
                         .createdAt(article.getCreatedAt())
                         .modifiedAt(article.getModifiedAt())
                         .articleCount(count(article.getBoardId()))
@@ -76,7 +79,7 @@ public class ArticleService {
     public ArticleResponse update(Long articleId, ArticleUpdateRequestDto dto) {
         Article article = articleRepository.findById(articleId).orElseThrow();
 
-        article.update(dto.getTitle(), dto.getContent());
+        article.update(dto.getTitle(), dto.getContent(), Category.valueOf(dto.getCategory()));
 
         outboxEventPublisher.publish(
                 EventType.ARTICLE_UPDATED,
@@ -86,6 +89,7 @@ public class ArticleService {
                         .content(article.getContent())
                         .boardId(article.getBoardId())
                         .userId(article.getUserId())
+                        .category(String.valueOf(article.getCategory()))
                         .createdAt(article.getCreatedAt())
                         .modifiedAt(article.getModifiedAt())
                         .build(),
@@ -115,6 +119,7 @@ public class ArticleService {
                         .boardId(article.getBoardId())
                         .userId(article.getUserId())
                         .createdAt(article.getCreatedAt())
+                        .category(String.valueOf(article.getCategory()))
                         .modifiedAt(article.getModifiedAt())
                         .articleCount(count(article.getBoardId()))
                         .build(),
@@ -140,5 +145,23 @@ public class ArticleService {
         return boardArticleCountRepository.findById(boardId)
                 .map(BoardArticleCount::getArticleCount)
                 .orElse(0L);
+    }
+
+    public List<ArticleResponse> search(Category category, String title) {
+        List<Article> result = articleRepository.findAllByCategoryAndTitleContaining(category, title);
+
+        return result.stream().map(ArticleResponse::from).toList();
+    }
+
+    public List<ArticleResponse> search(String title) {
+        List<Article> result = articleRepository.findAllByTitleContaining(title);
+
+        return result.stream().map(ArticleResponse::from).toList();
+    }
+
+    public List<ArticleResponse> readAllByCategory(Category category) {
+        List<Article> result = articleRepository.findAllByCategory(category);
+
+        return result.stream().map(ArticleResponse::from).toList();
     }
 }

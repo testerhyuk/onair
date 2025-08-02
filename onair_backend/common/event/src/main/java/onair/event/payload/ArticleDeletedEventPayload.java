@@ -18,6 +18,7 @@ public class ArticleDeletedEventPayload implements EventPayload {
     private Long userId;
     private String title;
     private String content;
+    private String category;
     private LocalDateTime createdAt;
     private LocalDateTime modifiedAt;
     private Long articleCount;

@@ -1,6 +1,7 @@
 package onair.article.repository;
 
 import onair.article.entity.Article;
+import onair.article.entity.Category;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -10,7 +11,7 @@ import java.util.List;
 public interface ArticleRepository extends JpaRepository<Article, Long> {
     @Query(
             value = "select article.article_id, article.board_id, article.user_id, article.title, " +
-                    "article.content, article.created_at, article.modified_at " +
+                    "article.content, article.category, article.created_at, article.modified_at " +
                     "where board_id = :boardId " +
                     "order by article_id desc limit :limit",
             nativeQuery = true
@@ -19,7 +20,7 @@ public interface ArticleRepository extends JpaRepository<Article, Long> {
 
     @Query(
             value = "select article.article_id, article.board_id, article.user_id, article.title, " +
-                    "article.content, article.created_at, article.modified_at " +
+                    "article.content, article.category, article.created_at, article.modified_at " +
                     "where board_id = :boardId and article_id < :lastArticleId " +
                     "order by article_id desc limit :limit",
             nativeQuery = true
@@ -28,4 +29,10 @@ public interface ArticleRepository extends JpaRepository<Article, Long> {
                                  @Param("limit") Long limit,
                                  @Param("lastArticleId") Long lastArticleId
     );
+
+    List<Article> findAllByCategory(Category category);
+
+    List<Article> findAllByTitleContaining(String keyword);
+
+    List<Article> findAllByCategoryAndTitleContaining(Category category, String keyword);
 }

@@ -4,6 +4,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import lombok.extern.log4j.Log4j2;
 import onair.article.entity.Article;
+import onair.article.entity.Category;
 import onair.snowflake.Snowflake;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,7 +63,8 @@ public class DataInitializer {
                         1L,
                         1L,
                         "title" + i,
-                        "content"
+                        "content",
+                        Category.ELECTRONICS
                 );
 
                 entityManager.persist(article);

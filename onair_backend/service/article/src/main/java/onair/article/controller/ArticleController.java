@@ -1,6 +1,7 @@
 package onair.article.controller;
 
 import lombok.RequiredArgsConstructor;
+import onair.article.entity.Category;
 import onair.article.service.ArticleService;
 import onair.article.service.request.ArticleCreateRequestDto;
 import onair.article.service.request.ArticleUpdateRequestDto;
@@ -45,5 +46,22 @@ public class ArticleController {
     @GetMapping("/v1/article/boards/{boardId}/count")
     public Long count(@PathVariable("boardId") Long boardId) {
         return articleService.count(boardId);
+    }
+
+    @GetMapping("/v1/article/category")
+    public List<ArticleResponse> readAllByCategory(@RequestParam("category") Category category) {
+        return articleService.readAllByCategory(category);
+    }
+
+    @GetMapping("/v1/article/search")
+    public List<ArticleResponse> search(
+            @RequestParam(value = "category", required = false) Category category,
+            @RequestParam("keyword") String keyword) {
+
+        if (category != null) {
+            return articleService.search(category, keyword);
+        } else {
+            return articleService.search(keyword);
+        }
     }
 }

@@ -3,6 +3,7 @@ package onair.article.api;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
+import onair.article.entity.Category;
 import onair.article.service.ArticleService;
 import onair.article.service.request.ArticleCreateRequestDto;
 import onair.article.service.request.ArticleUpdateRequestDto;
@@ -25,7 +26,7 @@ public class ArticleApiTest {
     @Test
     void createTest() {
         ArticleResponse response = create(new ArticleCreateRequestDto(
-                1L, 1L, "test title", "test content"
+                1L, 1L, "test title with category", "test content with category", "ELECTRONICS"
         ));
 
         log.info("response = {}", response);
@@ -43,7 +44,7 @@ public class ArticleApiTest {
     void updateTest() {
         Long articleId = 132271061575491584L;
         ArticleResponse response = update(articleId, new ArticleUpdateRequestDto(
-                "update title", "update content"
+                "update title", "update content", "ETC"
         ));
 
         log.info("response = {}", response);
@@ -110,7 +111,7 @@ public class ArticleApiTest {
 
     @Test
     void countTest() {
-        ArticleResponse response = create(new ArticleCreateRequestDto(1L, 2L, "title1", "content1"));
+        ArticleResponse response = create(new ArticleCreateRequestDto(1L, 2L, "title1", "content1", "ELECTRONICS"));
 
         Long count1 = restClient.get()
                 .uri("/v1/article/boards/{boardId}/count", 2L)
@@ -145,7 +146,7 @@ public class ArticleApiTest {
 
             executorService.execute(() -> {
                 try {
-                    create(new ArticleCreateRequestDto(userId, boardId, "concurrency test", "concurrency content"));
+                    create(new ArticleCreateRequestDto(userId, boardId, "concurrency test", "concurrency content", "ELECTRONICS"));
                 } finally {
                     latch.countDown();
                 }
@@ -164,6 +165,42 @@ public class ArticleApiTest {
         assertThat(articleCount).isEqualTo(threadCount);
     }
 
+    @Test
+    void readByCategory() {
+        List<ArticleResponse> responses = restClient.get()
+                .uri("/v1/article/category?category=ELECTRONICS")
+                .retrieve()
+                .body(new ParameterizedTypeReference<List<ArticleResponse>>() {});
+
+        for (ArticleResponse response : responses) {
+            log.info("response = %s".formatted(response));
+        }
+    }
+
+    @Test
+    void searchAll() {
+        List<ArticleResponse> responses = restClient.get()
+                .uri("/v1/article/search?keyword=test")
+                .retrieve()
+                .body(new ParameterizedTypeReference<List<ArticleResponse>>() {});
+
+        for (ArticleResponse response : responses) {
+            log.info("response = %s".formatted(response));
+        }
+    }
+
+    @Test
+    void searchCategoryAndTitle() {
+        List<ArticleResponse> responses = restClient.get()
+                .uri("/v1/article/search?category=ELECTRONICS&keyword=test")
+                .retrieve()
+                .body(new ParameterizedTypeReference<List<ArticleResponse>>() {});
+
+        for (ArticleResponse response : responses) {
+            log.info("response = %s".formatted(response));
+        }
+    }
+
     @Getter
     @AllArgsConstructor
     static class ArticleCreateRequestDto {
@@ -171,6 +208,7 @@ public class ArticleApiTest {
         private Long boardId;
         private String title;
         private String content;
+        private String category;
     }
 
     @Getter
@@ -178,5 +216,6 @@ public class ArticleApiTest {
     static class ArticleUpdateRequestDto {
         private String title;
         private String content;
+        private String category;
     }
 }
