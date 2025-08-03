@@ -17,7 +17,9 @@ public enum EventType {
     COMMENT_DELETED(CommentDeletedEventPayload.class, Topic.ONAIR_COMMENT),
     ARTICLE_LIKED(ArticleLikedEventPayload.class, Topic.ONAIR_LIKE),
     ARTICLE_UNLIKED(ArticleUnlikedEventPayload.class, Topic.ONAIR_LIKE),
-    ARTICLE_VIEWED(ArticleViewedEventPayload.class, Topic.ONAIR_VIEW)
+    ARTICLE_VIEWED(ArticleViewedEventPayload.class, Topic.ONAIR_VIEW),
+    ARTICLE_SUMMARY_RESPONSE(ArticleSummaryResponseEventPayload.class, Topic.ONAIR_ARTICLE_SUMMARY_RESPONSE),
+    ARTICLE_SUMMARY_REQUEST(ArticleSummaryRequestEventPayload.class, Topic.ONAIR_ARTICLE_SUMMARY_REQUEST)
     ;
 
     private final Class<? extends EventPayload> payloadClass;
@@ -38,5 +40,7 @@ public enum EventType {
         public static final String ONAIR_COMMENT = "onair-comment";
         public static final String ONAIR_LIKE = "onair-article-like";
         public static final String ONAIR_VIEW = "onair-article-view";
+        public static final String ONAIR_ARTICLE_SUMMARY_RESPONSE = "onair-article-summary-response";
+        public static final String ONAIR_ARTICLE_SUMMARY_REQUEST = "onair-article-summary-request";
     }
 }

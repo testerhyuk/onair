@@ -12,6 +12,7 @@ import onair.article.service.response.ArticleResponse;
 import onair.event.EventType;
 import onair.event.payload.ArticleCreatedEventPayload;
 import onair.event.payload.ArticleDeletedEventPayload;
+import onair.event.payload.ArticleSummaryRequestEventPayload;
 import onair.event.payload.ArticleUpdatedEventPayload;
 import onair.outboxmessagerelay.OutboxEventPublisher;
 import onair.snowflake.Snowflake;
@@ -68,6 +69,15 @@ public class ArticleService {
                         .createdAt(article.getCreatedAt())
                         .modifiedAt(article.getModifiedAt())
                         .articleCount(count(article.getBoardId()))
+                        .build(),
+                article.getBoardId()
+        );
+
+        outboxEventPublisher.publish(
+                EventType.ARTICLE_SUMMARY_REQUEST,
+                ArticleSummaryRequestEventPayload.builder()
+                        .articleId(article.getArticleId())
+                        .content(article.getContent())
                         .build(),
                 article.getBoardId()
         );

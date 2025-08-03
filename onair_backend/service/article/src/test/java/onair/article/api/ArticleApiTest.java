@@ -26,7 +26,7 @@ public class ArticleApiTest {
     @Test
     void createTest() {
         ArticleResponse response = create(new ArticleCreateRequestDto(
-                1L, 1L, "test title with category", "test content with category", "POLITICS"
+                1L, 1L, "test summary", "test content summary", "POLITICS"
         ));
 
         log.info("response = {}", response);
@@ -35,6 +35,7 @@ public class ArticleApiTest {
     ArticleResponse create(ArticleCreateRequestDto dto) {
         return restClient.post()
                 .uri("/v1/article")
+                .header("X-Member-Role", "REPORTER")
                 .body(dto)
                 .retrieve()
                 .body(ArticleResponse.class);
