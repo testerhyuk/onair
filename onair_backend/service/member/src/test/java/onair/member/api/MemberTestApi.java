@@ -57,7 +57,8 @@ public class MemberTestApi {
                 "test214!@",
                 "21445",
                 "address",
-                "detail address"
+                "detail address",
+                "REPORTER"
         );
 
         Mockito.when(redisTemplate.hasKey("withdrawn:" + request.getEmail())).thenReturn(false);
@@ -79,7 +80,8 @@ public class MemberTestApi {
                 "test214!@",
                 "21445",
                 "address",
-                "detail address"
+                "detail address",
+                "REPORTER"
         );
 
         Mockito.when(redisTemplate.hasKey("withdrawn:" + request.getEmail())).thenReturn(true);
@@ -101,7 +103,8 @@ public class MemberTestApi {
                     "nickname": "test",
                     "zipCode": "21445",
                     "address": "address",
-                    "detailAddress": "detail address"
+                    "detailAddress": "detail address",
+                    "role" : "REPORTER"
                 }
         """;
 
@@ -122,7 +125,8 @@ public class MemberTestApi {
                     "nickname": "test",
                     "zipCode": "21445",
                     "address": "address",
-                    "detailAddress": "detail address"
+                    "detailAddress": "detail address",
+                    "role" : "REPORTER"
                 }
         """;
 
@@ -143,7 +147,8 @@ public class MemberTestApi {
                     "nickname": "test",
                     "zipCode": "21445",
                     "address": "address",
-                    "detailAddress": "detail address"
+                    "detailAddress": "detail address",
+                    "role" : "REPORTER"
                 }
         """;
 

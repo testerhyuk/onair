@@ -46,9 +46,11 @@ public class JwtAuthenticationFilter implements GlobalFilter, Ordered {
         }
 
         String memberId = jwtProvider.getMemberFromToken(token);
+        String role = jwtProvider.getRoleFromToken(token);
 
         ServerHttpRequest modifiedRequest = exchange.getRequest().mutate()
                 .header("X-Member-Id", memberId)
+                .header("X-Member-Role", role)
                 .build();
 
         exchange = exchange.mutate().request(modifiedRequest).build();

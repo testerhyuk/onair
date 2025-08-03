@@ -37,4 +37,5 @@ public class SignUpRequest {
     @NotBlank(message = "주소는 필수 입력값입니다.")
     private String address;
     private String detailAddress;
+    private String role;
 }

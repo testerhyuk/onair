@@ -3,6 +3,7 @@ package onair.member.service;
 import lombok.RequiredArgsConstructor;
 import onair.jwt.JwtProvider;
 import onair.member.entity.Member;
+import onair.member.entity.Role;
 import onair.member.repository.MemberRepository;
 import onair.member.service.request.LoginRequest;
 import onair.member.service.request.MemberUpdateRequest;
@@ -54,7 +55,8 @@ public class MemberService {
                 request.getNickname(),
                 request.getZipCode(),
                 request.getAddress(),
-                request.getDetailAddress()
+                request.getDetailAddress(),
+                Role.valueOf(request.getRole())
         );
 
         return SignUpResponse.of(memberRepository.save(member));

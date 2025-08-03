@@ -13,6 +13,7 @@ public class SignUpResponse {
     private String zipCode;
     private String address;
     private String detailAddress;
+    private String role;
 
     public static SignUpResponse of(Member member) {
         SignUpResponse response = new SignUpResponse();
@@ -23,6 +24,7 @@ public class SignUpResponse {
         response.zipCode = member.getZipCode();
         response.address = member.getAddress();
         response.detailAddress = member.getDetailAddress();
+        response.role = String.valueOf(member.getRole());
 
         return response;
     }

@@ -1,6 +1,8 @@
 package onair.member.entity;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -22,13 +24,15 @@ public class Member {
     private String zipCode;
     private String address;
     private String detailAddress;
+    @Enumerated(EnumType.STRING)
+    private Role role;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private LocalDateTime deletedAt;
     private boolean deleted;
 
     public static Member create(Long memberId, String email, String password, String nickname, String zipCode,
-                                String address, String detailAddress) {
+                                String address, String detailAddress, Role role) {
         Member member = new Member();
 
         member.memberId = memberId;
@@ -38,6 +42,7 @@ public class Member {
         member.zipCode = zipCode;
         member.address = address;
         member.detailAddress = detailAddress;
+        member.role = role;
         member.createdAt = LocalDateTime.now();
         member.updatedAt = member.createdAt;
         member.deleted = false;

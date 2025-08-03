@@ -8,6 +8,7 @@ import onair.article.service.request.ArticleUpdateRequestDto;
 import onair.article.service.response.ArticleResponse;
 import org.springframework.web.bind.annotation.*;
 
+import java.nio.file.AccessDeniedException;
 import java.util.List;
 
 @RestController
@@ -16,7 +17,14 @@ public class ArticleController {
     private final ArticleService articleService;
 
     @PostMapping("/v1/article")
-    public ArticleResponse create(@RequestBody ArticleCreateRequestDto dto) {
+    public ArticleResponse create(
+            @RequestBody ArticleCreateRequestDto dto,
+            @RequestHeader("X-Member-Role") String role) throws AccessDeniedException {
+
+        if (!"REPORTER".equalsIgnoreCase(role)) {
+            throw new AccessDeniedException("게시글 작성 권한이 없습니다.");
+        }
+
         return articleService.create(dto);
     }
 
