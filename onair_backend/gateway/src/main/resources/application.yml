@@ -33,3 +33,13 @@ spring:
           uri: http://localhost:9036
           predicates:
             - Path=/v1/hot-articles/**
+
+        - id: onair-article-summary-service
+          uri: http://localhost:9037
+          predicates:
+            - Path=/v1/article-summary/**
+
+        - id: onair-article-images-service
+          uri: http://localhost:9038
+          predicates:
+            - Path=/v1/article-images/**

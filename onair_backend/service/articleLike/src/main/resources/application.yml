@@ -20,3 +20,9 @@ spring:
       port: 6433
   kafka:
     bootstrap-servers: 127.0.0.1:9092
+springdoc:
+  api-docs:
+    path: /v1/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    operationsSorter: method

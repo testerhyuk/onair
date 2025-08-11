@@ -57,19 +57,21 @@ public class ArticleController {
     }
 
     @GetMapping("/v1/article/category")
-    public List<ArticleResponse> readAllByCategory(@RequestParam("category") Category category) {
-        return articleService.readAllByCategory(category);
+    public List<ArticleResponse> readAllByCategory(@RequestParam("boardId") Long boardId,
+                                                   @RequestParam("category") String category,
+                                                   @RequestParam("pageSize") Long pageSize,
+                                                   @RequestParam(value = "lastArticleId", required = false) Long lastArticleId
+                                                   ) {
+        return articleService.readAllByCategory(boardId, category, pageSize, lastArticleId);
     }
 
     @GetMapping("/v1/article/search")
     public List<ArticleResponse> search(
-            @RequestParam(value = "category", required = false) Category category,
-            @RequestParam("keyword") String keyword) {
+            @RequestParam("boardId") Long boardId,
+            @RequestParam("keyword") String keyword,
+            @RequestParam("pageSize") Long pageSize,
+            @RequestParam(value = "lastArticleId", required = false) Long lastArticleId) {
 
-        if (category != null) {
-            return articleService.search(category, keyword);
-        } else {
-            return articleService.search(keyword);
-        }
+        return articleService.search(boardId, keyword, pageSize, lastArticleId);
     }
 }

@@ -3,11 +3,12 @@ rootProject.name = 'onair_backend'
 include ':service'
 include ':service:article'
 include ':service:member'
-include ':service:comment'
 include ':service:articleLike'
 include ':service:articleView'
 include ':service:hot-article'
 include ':service:articleSummary'
+include ':service:articleImages'
+include ':service:comment'
 
 include 'gateway'
 

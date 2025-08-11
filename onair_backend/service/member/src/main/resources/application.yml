@@ -20,3 +20,9 @@ spring:
       port: 6433
 jwt:
   secret-key: ${JWT_SECRET_KEY}
+springdoc:
+  api-docs:
+    path: /v1/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    operationsSorter: method

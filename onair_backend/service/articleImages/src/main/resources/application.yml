@@ -1,11 +1,11 @@
 server:
-  port: 9035
+  port: 9038
 spring:
   application:
-    name: onair-view-service
+    name: onair-article-images-service
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://127.0.0.1:3308/article_view
+    url: jdbc:mysql://127.0.0.1:3308/article_images
     username: ${MYSQL_ROOT_USERNAME}
     password: ${MYSQL_ROOT_PASSWORD}
   jpa:
@@ -14,12 +14,17 @@ spring:
     show-sql: true
     hibernate:
       ddl-auto: update
-  data:
-    redis:
-      host: 127.0.0.1
-      port: 6433
-  kafka:
-    bootstrap-servers: 127.0.0.1:9092
+  cloud:
+    aws:
+      s3:
+        path-style-access-enabled: true
+      credentials:
+        access-key: ${AMAZON_S3_ACCESS_KEY}
+        secret-key: ${AMAZON_S3_SECRET_KEY}
+      region:
+        static: ap-northeast-2
+bucket:
+  name: onairmarket
 springdoc:
   api-docs:
     path: /v1/api-docs

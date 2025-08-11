@@ -169,9 +169,11 @@ public class ArticleApiTest {
     @Test
     void readByCategory() {
         List<ArticleResponse> responses = restClient.get()
-                .uri("/v1/article/category?category=POLITICS")
+                .uri("/v1/article/category?boardId=1&category=POLITICS&pageSize=5")
                 .retrieve()
                 .body(new ParameterizedTypeReference<List<ArticleResponse>>() {});
+
+        log.info("response size = {}", responses.size());
 
         for (ArticleResponse response : responses) {
             log.info("response = %s".formatted(response));
@@ -181,19 +183,7 @@ public class ArticleApiTest {
     @Test
     void searchAll() {
         List<ArticleResponse> responses = restClient.get()
-                .uri("/v1/article/search?keyword=test")
-                .retrieve()
-                .body(new ParameterizedTypeReference<List<ArticleResponse>>() {});
-
-        for (ArticleResponse response : responses) {
-            log.info("response = %s".formatted(response));
-        }
-    }
-
-    @Test
-    void searchCategoryAndTitle() {
-        List<ArticleResponse> responses = restClient.get()
-                .uri("/v1/article/search?category=POLITICS&keyword=test")
+                .uri("/v1/article/search?boardId=1&keyword=summary&pageSize=5")
                 .retrieve()
                 .body(new ParameterizedTypeReference<List<ArticleResponse>>() {});
 

@@ -157,21 +157,21 @@ public class ArticleService {
                 .orElse(0L);
     }
 
-    public List<ArticleResponse> search(Category category, String title) {
-        List<Article> result = articleRepository.findAllByCategoryAndTitleContaining(category, title);
+    public List<ArticleResponse> search(Long boardId, String keyword, Long limit, Long lastArticleId) {
+        String keywordForDB = "%" + keyword + "%";
 
-        return result.stream().map(ArticleResponse::from).toList();
+        List<Article> articles = lastArticleId == null ?
+                articleRepository.findAllByTitleAndContentContaining(boardId, keywordForDB, limit) :
+                articleRepository.findAllByTitleAndContentContaining(boardId, keywordForDB, limit, lastArticleId);
+
+        return articles.stream().map(ArticleResponse::from).toList();
     }
 
-    public List<ArticleResponse> search(String title) {
-        List<Article> result = articleRepository.findAllByTitleContaining(title);
+    public List<ArticleResponse> readAllByCategory(Long boardId, String category, Long limit, Long lastArticleId) {
+        List<Article> articles = lastArticleId == null ?
+                articleRepository.findAllByCategory(boardId, category, limit) :
+                articleRepository.findAllByCategory(boardId, category, limit, lastArticleId);
 
-        return result.stream().map(ArticleResponse::from).toList();
-    }
-
-    public List<ArticleResponse> readAllByCategory(Category category) {
-        List<Article> result = articleRepository.findAllByCategory(category);
-
-        return result.stream().map(ArticleResponse::from).toList();
+        return articles.stream().map(ArticleResponse::from).toList();
     }
 }

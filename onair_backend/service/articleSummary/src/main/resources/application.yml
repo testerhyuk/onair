@@ -24,3 +24,9 @@ spring:
 endpoints:
   onair-article-service:
     url: http://127.0.0.1:9030
+springdoc:
+  api-docs:
+    path: /v1/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    operationsSorter: method

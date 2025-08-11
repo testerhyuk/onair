@@ -12,6 +12,7 @@ public interface ArticleRepository extends JpaRepository<Article, Long> {
     @Query(
             value = "select article.article_id, article.board_id, article.user_id, article.title, " +
                     "article.content, article.category, article.created_at, article.modified_at " +
+                    "from article " +
                     "where board_id = :boardId " +
                     "order by article_id desc limit :limit",
             nativeQuery = true
@@ -21,6 +22,7 @@ public interface ArticleRepository extends JpaRepository<Article, Long> {
     @Query(
             value = "select article.article_id, article.board_id, article.user_id, article.title, " +
                     "article.content, article.category, article.created_at, article.modified_at " +
+                    "from article " +
                     "where board_id = :boardId and article_id < :lastArticleId " +
                     "order by article_id desc limit :limit",
             nativeQuery = true
@@ -30,9 +32,54 @@ public interface ArticleRepository extends JpaRepository<Article, Long> {
                                  @Param("lastArticleId") Long lastArticleId
     );
 
-    List<Article> findAllByCategory(Category category);
+    @Query(
+            value = "select article.article_id, article.board_id, article.user_id, article.title, " +
+                    "article.content, article.category, article.created_at, article.modified_at " +
+                    "from article " +
+                    "where board_id = :boardId and category = :category " +
+                    "order by article_id desc limit :limit",
+            nativeQuery = true
+    )
+    List<Article> findAllByCategory(@Param("boardId") Long boardId,
+                                    @Param("category") String category,
+                                    @Param("limit") Long limit);
 
-    List<Article> findAllByTitleContaining(String keyword);
+    @Query(
+            value = "select article.article_id, article.board_id, article.user_id, article.title, " +
+                    "article.content, article.category, article.created_at, article.modified_at " +
+                    "from article " +
+                    "where board_id = :boardId and article_id < :lastArticleId and category = :category " +
+                    "order by article_id desc limit :limit",
+            nativeQuery = true
+    )
+    List<Article> findAllByCategory(@Param("boardId") Long boardId,
+                                    @Param("category") String category,
+                                    @Param("limit") Long limit,
+                                    @Param("lastArticleId") Long lastArticleId);
 
-    List<Article> findAllByCategoryAndTitleContaining(Category category, String keyword);
+    @Query(
+            value = "select article.article_id, article.board_id, article.user_id, article.title, " +
+                    "article.content, article.category, article.created_at, article.modified_at " +
+                    "from article " +
+                    "where board_id = :boardId and (title like :keyword or content like :keyword) " +
+                    "order by article_id desc limit :limit",
+            nativeQuery = true
+    )
+    List<Article> findAllByTitleAndContentContaining(@Param("boardId") Long boardId,
+                                                     @Param("keyword") String keyword,
+                                                     @Param("limit") Long limit);
+
+    @Query(
+            value = "select article.article_id, article.board_id, article.user_id, article.title, " +
+                    "article.content, article.category, article.created_at, article.modified_at " +
+                    "from article " +
+                    "where board_id = :boardId and article_id < :lastArticleId and " +
+                    "(title like :keyword or content like :keyword) " +
+                    "order by article_id desc limit :limit",
+            nativeQuery = true
+    )
+    List<Article> findAllByTitleAndContentContaining(@Param("boardId") Long boardId,
+                                                     @Param("keyword") String keyword,
+                                                     @Param("limit") Long limit,
+                                                     @Param("lastArticleId") Long lastArticleId);
 }
