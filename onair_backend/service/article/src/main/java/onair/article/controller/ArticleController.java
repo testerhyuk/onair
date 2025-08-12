@@ -30,12 +30,24 @@ public class ArticleController {
 
     @PutMapping("/v1/article/{articleId}")
     public ArticleResponse update(@PathVariable("articleId") Long articleId,
-                                  @RequestBody ArticleUpdateRequestDto dto) {
+                                  @RequestBody ArticleUpdateRequestDto dto,
+                                  @RequestHeader("X-Member-Role") String role) throws AccessDeniedException {
+
+        if (!"REPORTER".equalsIgnoreCase(role)) {
+            throw new AccessDeniedException("게시글 작성 권한이 없습니다.");
+        }
+
         return articleService.update(articleId, dto);
     }
 
     @DeleteMapping("/v1/article/{articleId}")
-    public void delete(@PathVariable("articleId") Long articleId) {
+    public void delete(@PathVariable("articleId") Long articleId,
+                       @RequestHeader("X-Member-Role") String role) throws AccessDeniedException {
+
+        if (!"REPORTER".equalsIgnoreCase(role)) {
+            throw new AccessDeniedException("게시글 작성 권한이 없습니다.");
+        }
+
         articleService.delete(articleId);
     }
 
