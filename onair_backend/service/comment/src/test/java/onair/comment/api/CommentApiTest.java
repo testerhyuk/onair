@@ -26,8 +26,8 @@ public class CommentApiTest {
 
     @Test
     void create() {
-        CommentResponse response1 = createComment(new CommentCreateRequest(1L, null, 136998378236133376L, "my content"));
-        CommentResponse response2 = createComment(new CommentCreateRequest(1L, response1.getCommentId(), 136998378236133376L, "my content"));
+        CommentResponse response1 = createComment(new CommentCreateRequest(150312916205203456L, null, 136998378236133376L, "my content"));
+        CommentResponse response2 = createComment(new CommentCreateRequest(150312916205203456L, response1.getCommentId(), 136998378236133376L, "my content"));
 
         log.info("commentId = %s".formatted(response1.getCommentId()));
         log.info("commentId = %s".formatted(response2.getCommentId()));

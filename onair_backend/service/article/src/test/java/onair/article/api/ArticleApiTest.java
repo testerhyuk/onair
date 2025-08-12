@@ -26,7 +26,7 @@ public class ArticleApiTest {
     @Test
     void createTest() {
         ArticleResponse response = create(new ArticleCreateRequestDto(
-                1L, 1L, "test summary", "test content summary", "POLITICS"
+                1L, 1L, "test summary10", "test content summary10", "IT"
         ));
 
         log.info("response = {}", response);
@@ -61,7 +61,7 @@ public class ArticleApiTest {
 
     @Test
     void readTest() {
-        Long articleId = 132271061575491584L;
+        Long articleId = 150312916205203456L;
 
         ArticleResponse response = read(articleId);
 

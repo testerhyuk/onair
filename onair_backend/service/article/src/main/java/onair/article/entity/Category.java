@@ -7,7 +7,11 @@ public enum Category {
     ECONOMIC,
     ENTERTAINMENT,
     WORLD,
-    SOCIETY;
+    SOCIETY,
+    CULTURE,
+    IT,
+    SCIENCE
+    ;
 
     @JsonCreator
     public static Category from(String value) {
