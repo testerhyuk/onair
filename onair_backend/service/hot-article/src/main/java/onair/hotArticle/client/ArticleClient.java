@@ -39,7 +39,7 @@ public class ArticleClient {
 
     @Getter
     public static class ArticleResponse {
-        private Long articleId;
+        private String articleId;
         private String title;
         private LocalDateTime createdAt;
     }

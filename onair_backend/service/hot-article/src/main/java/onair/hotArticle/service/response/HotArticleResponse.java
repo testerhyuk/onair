@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 @Getter
 @ToString
 public class HotArticleResponse {
-    private Long articleId;
+    private String articleId;
     private String title;
     private LocalDateTime createdAt;
 
