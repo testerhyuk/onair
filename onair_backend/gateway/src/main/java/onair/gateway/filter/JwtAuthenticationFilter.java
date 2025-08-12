@@ -23,7 +23,14 @@ public class JwtAuthenticationFilter implements GlobalFilter, Ordered {
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
         String path = exchange.getRequest().getURI().getPath();
 
-        List<String> whiteList = List.of("/v1/member/signup", "/v1/member/login");
+        List<String> whiteList = List.of(
+                "/v1/member/signup",
+                "/v1/member/login",
+                "/v1/article/**",
+                "/v1/article-views/**",
+                "/v1/hot-articles/**",
+                "/v1/article-summary/**"
+        );
 
         if (whiteList.stream().anyMatch(path::startsWith)) {
             return chain.filter(exchange);
