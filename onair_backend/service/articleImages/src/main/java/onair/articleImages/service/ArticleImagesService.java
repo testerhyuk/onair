@@ -77,8 +77,17 @@ public class ArticleImagesService {
     }
 
     @Transactional
-    public List<ArticleImagesResponse> deleteImages(List<Long> imageIds) {
-        List<ArticleImages> imagesToDelete = articleImagesRepository.findAllById(imageIds);
+    public List<ArticleImagesResponse> deleteImages(List<String> imageUrls) {
+        if (imageUrls == null || imageUrls.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        List<ArticleImages> imagesToDelete = articleImagesRepository.findByImagesUrlIn(imageUrls);
+
+
+        if (imagesToDelete.isEmpty()) {
+            return Collections.emptyList();
+        }
 
         for (ArticleImages image : imagesToDelete) {
             s3Service.deleteImages(image.getImagesUrl());
@@ -89,10 +98,9 @@ public class ArticleImagesService {
         if (imagesToDelete.isEmpty()) {
             return Collections.emptyList();
         }
-        Long articleId = imagesToDelete.get(0).getArticleId();
-        List<ArticleImages> remainingImages = articleImagesRepository.findByArticleId(articleId);
 
-        return remainingImages.stream()
+
+        return imagesToDelete.stream()
                 .map(ArticleImagesResponse::from)
                 .collect(Collectors.toList());
     }

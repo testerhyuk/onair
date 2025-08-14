@@ -8,5 +8,5 @@ import java.util.List;
 @Getter
 @ToString
 public class ArticleImagesDeleteRequest {
-    private List<Long> imageIds;
+    private List<String> imageUrls;
 }

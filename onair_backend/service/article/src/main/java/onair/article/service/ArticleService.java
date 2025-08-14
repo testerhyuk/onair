@@ -44,8 +44,6 @@ public class ArticleService {
         Long boardId = Long.parseLong(dto.getBoardId());
         Long userId = Long.parseLong(dto.getUserId());
 
-        System.out.println("Received Dto : " + dto);
-
         Article article = articleRepository.save(Article.create(
                 snowflake.nextId(),
                 boardId,

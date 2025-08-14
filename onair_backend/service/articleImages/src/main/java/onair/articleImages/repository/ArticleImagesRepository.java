@@ -7,4 +7,5 @@ import java.util.List;
 
 public interface ArticleImagesRepository extends JpaRepository<ArticleImages, Long> {
     List<ArticleImages> findByArticleId(Long articleId);
+    List<ArticleImages> findByImagesUrlIn(List<String> imagesUrls);
 }

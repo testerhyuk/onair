@@ -36,7 +36,7 @@ public class ArticleImagesController {
 
     @DeleteMapping("/v1/article-images")
     public List<ArticleImagesResponse> deleteImages(@RequestBody ArticleImagesDeleteRequest request) throws AccessDeniedException{
-        return articleImagesService.deleteImages(request.getImageIds());
+        return articleImagesService.deleteImages(request.getImageUrls());
     }
 
     @GetMapping("/v1/article-images/article/{articleId}")
