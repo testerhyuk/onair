@@ -13,14 +13,20 @@ public class ArticleLikeResponse {
     private Long articleId;
     private Long userId;
     private LocalDateTime createdAt;
+    private boolean liked;
 
     public static ArticleLikeResponse from(ArticleLike articleLike) {
         ArticleLikeResponse response = new ArticleLikeResponse();
 
-        response.articleLikeId = articleLike.getArticleLikeId();
-        response.articleId = articleLike.getArticleId();
-        response.userId = articleLike.getUserId();
-        response.createdAt = articleLike.getCreatedAt();
+        if (articleLike != null) {
+            response.articleLikeId = articleLike.getArticleLikeId();
+            response.articleId = articleLike.getArticleId();
+            response.userId = articleLike.getUserId();
+            response.createdAt = articleLike.getCreatedAt();
+            response.liked = true;
+        } else {
+            response.liked = false;
+        }
 
         return response;
     }

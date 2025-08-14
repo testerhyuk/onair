@@ -97,4 +97,9 @@ public class ArticleImagesService {
                 .collect(Collectors.toList());
     }
 
+    public List<String> getImageUrlsByArticleId(Long articleId) {
+        return articleImagesRepository.findByArticleId(articleId).stream()
+                .map(ArticleImages::getImagesUrl)
+                .toList();
+    }
 }

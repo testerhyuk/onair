@@ -48,7 +48,6 @@ public class MemberController {
         String newAccessToken = authService.reissueAccessToken(request.getMemberId(), request.getRefreshToken());
 
         ReissueResponse response = new ReissueResponse(newAccessToken);
-
         return ResponseEntity.ok(response);
     }
 

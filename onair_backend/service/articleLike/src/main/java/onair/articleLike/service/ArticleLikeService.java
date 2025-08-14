@@ -16,6 +16,8 @@ import onair.snowflake.Snowflake;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 public class ArticleLikeService {
@@ -89,5 +91,10 @@ public class ArticleLikeService {
         return articleLikeCountRepository.findById(articleId)
                 .map(ArticleLikeCount::getLikeCount)
                 .orElse(0L);
+    }
+
+    public boolean isLiked(Long articleId, Long userId) {
+        Optional<ArticleLike> articleLike = articleLikeRepository.findByArticleIdAndUserId(articleId, userId);
+        return articleLike.isPresent();
     }
 }

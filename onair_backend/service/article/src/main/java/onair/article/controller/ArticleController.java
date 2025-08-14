@@ -19,8 +19,9 @@ public class ArticleController {
     @PostMapping("/v1/article")
     public ArticleResponse create(
             @RequestBody ArticleCreateRequestDto dto,
-            @RequestHeader("X-Member-Role") String role) throws AccessDeniedException {
+            @RequestHeader(value = "X-Member-Role", required = false) String role) throws AccessDeniedException {
 
+        System.out.println("role : " + role);
         if (!"REPORTER".equalsIgnoreCase(role)) {
             throw new AccessDeniedException("게시글 작성 권한이 없습니다.");
         }
@@ -31,7 +32,7 @@ public class ArticleController {
     @PutMapping("/v1/article/{articleId}")
     public ArticleResponse update(@PathVariable("articleId") Long articleId,
                                   @RequestBody ArticleUpdateRequestDto dto,
-                                  @RequestHeader("X-Member-Role") String role) throws AccessDeniedException {
+                                  @RequestHeader(value = "X-Member-Role", required = false) String role) throws AccessDeniedException {
 
         if (!"REPORTER".equalsIgnoreCase(role)) {
             throw new AccessDeniedException("게시글 작성 권한이 없습니다.");
@@ -42,7 +43,7 @@ public class ArticleController {
 
     @DeleteMapping("/v1/article/{articleId}")
     public void delete(@PathVariable("articleId") Long articleId,
-                       @RequestHeader("X-Member-Role") String role) throws AccessDeniedException {
+                       @RequestHeader(value = "X-Member-Role", required = false) String role) throws AccessDeniedException {
 
         if (!"REPORTER".equalsIgnoreCase(role)) {
             throw new AccessDeniedException("게시글 작성 권한이 없습니다.");

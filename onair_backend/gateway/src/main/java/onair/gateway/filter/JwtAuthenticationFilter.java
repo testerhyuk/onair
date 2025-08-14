@@ -29,20 +29,30 @@ public class JwtAuthenticationFilter implements GlobalFilter, Ordered {
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
         String path = exchange.getRequest().getURI().getPath();
+        String method = exchange.getRequest().getMethod().name();
 
-        List<String> whiteList = List.of(
-                "/v1/member/signup",
-                "/v1/member/login",
+        List<String> getWhiteList = List.of(
                 "/v1/article/**",
                 "/v1/article-views/**",
                 "/v1/hot-articles/**",
                 "/v1/article-summary/**",
                 "/v1/comment/articles/**",
-                "/v1/comment/infinite-scroll"
+                "/v1/comment/infinite-scroll",
+                "/v1/article-images/**",
+                "/v1/article-like/**"
         );
 
-        boolean isWhiteListed = whiteList.stream()
-                .anyMatch(pattern -> matcher.match(pattern, path));
+        List<String> allMethodWhiteList = List.of(
+                "/v1/member/signup",
+                "/v1/member/login",
+                "/v1/member/reissue"
+        );
+
+        boolean isWhiteListed = getWhiteList.stream()
+                .anyMatch(pattern -> matcher.match(pattern, path) && "GET".equalsIgnoreCase(method))
+                ||
+                allMethodWhiteList.stream()
+                        .anyMatch(pattern -> matcher.match(pattern, path));
 
         if (isWhiteListed) {
             return chain.filter(exchange);

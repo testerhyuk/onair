@@ -41,18 +41,23 @@ public class ArticleService {
     )
     @Transactional
     public ArticleResponse create(ArticleCreateRequestDto dto) {
+        Long boardId = Long.parseLong(dto.getBoardId());
+        Long userId = Long.parseLong(dto.getUserId());
+
+        System.out.println("Received Dto : " + dto);
+
         Article article = articleRepository.save(Article.create(
                 snowflake.nextId(),
-                dto.getBoardId(),
-                dto.getUserId(),
+                boardId,
+                userId,
                 dto.getTitle(),
                 dto.getContent(),
                 Category.valueOf(dto.getCategory())
                 )
         );
 
-        BoardArticleCount boardArticleCount = boardArticleCountRepository.findLockedByBoardId(dto.getBoardId())
-                .orElseGet(() -> BoardArticleCount.init(dto.getBoardId(), 0L));
+        BoardArticleCount boardArticleCount = boardArticleCountRepository.findLockedByBoardId(boardId)
+                .orElseGet(() -> BoardArticleCount.init(boardId, 0L));
 
         boardArticleCount.increase();
         boardArticleCountRepository.save(boardArticleCount);

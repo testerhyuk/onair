@@ -29,17 +29,19 @@ public class S3Service {
     }
 
     private String generatePreSignedUrl(String fileName) {
+        String uniqueFileName = appendRandomUuid(fileName);
+
         PutObjectRequest putObjectRequest = PutObjectRequest.builder()
                 .bucket(bucket)
-                .key(fileName)
+                .key(uniqueFileName)
                 .build();
 
-        PutObjectPresignRequest presignRequest = PutObjectPresignRequest.builder()
+        PutObjectPresignRequest presignedRequest = PutObjectPresignRequest.builder()
                 .signatureDuration(Duration.ofMinutes(3))
                 .putObjectRequest(putObjectRequest)
                 .build();
 
-        return s3Presigner.presignPutObject(presignRequest).url().toString();
+        return s3Presigner.presignPutObject(presignedRequest).url().toString();
     }
 
     public void deleteImages(String imageUrl) {
@@ -51,5 +53,17 @@ public class S3Service {
                 .build();
 
         s3Client.deleteObject(deleteObjectRequest);
+    }
+
+    private String appendRandomUuid(String fileName) {
+        String uuid = java.util.UUID.randomUUID().toString();
+        int dotIndex = fileName.lastIndexOf(".");
+        if (dotIndex != -1) {
+            String name = fileName.substring(0, dotIndex);
+            String ext = fileName.substring(dotIndex);
+            return name + "-" + uuid + ext;
+        } else {
+            return fileName + "-" + uuid;
+        }
     }
 }

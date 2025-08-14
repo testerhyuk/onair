@@ -9,8 +9,8 @@ import onair.article.entity.Category;
 @AllArgsConstructor
 @ToString
 public class ArticleCreateRequestDto {
-    private Long boardId;
-    private Long userId;
+    private String boardId;
+    private String userId;
     private String title;
     private String content;
     private String category;

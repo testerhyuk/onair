@@ -71,7 +71,7 @@ public class MemberService {
             throw new IllegalArgumentException("아이디 또는 비밀번호가 틀렸습니다");
         }
 
-        String accessToken = jwtProvider.generateAccessToken(String.valueOf(member.getMemberId()));
+        String accessToken = jwtProvider.generateAccessToken(String.valueOf(member.getMemberId()), member.getRole().name());
 
         String refreshToken = jwtProvider.generateRefreshToken(String.valueOf(member.getMemberId()));
 
