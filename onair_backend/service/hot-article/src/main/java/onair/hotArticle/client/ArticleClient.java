@@ -25,6 +25,7 @@ public class ArticleClient {
     }
 
     public ArticleResponse read(Long articleId) {
+        System.out.println("article id : " + articleId);
         try {
             return restClient.get()
                     .uri("/v1/article/{articleId}", articleId)

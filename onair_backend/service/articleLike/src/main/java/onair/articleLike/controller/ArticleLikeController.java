@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -52,7 +53,13 @@ public class ArticleLikeController {
             @PathVariable Long userId
     ) {
         boolean likeStatus = articleLikeService.isLiked(articleId, userId);
-        System.out.println("likeStatus : " + likeStatus);
+
         return Collections.singletonMap("likeStatus", likeStatus);
+    }
+
+    @GetMapping("/v1/article-like/articles/member/{userId}")
+    public List<ArticleLikeResponse> getArticleLikeByUserId(@PathVariable("userId") String userId) {
+        Long memberId = Long.parseLong(userId);
+        return articleLikeService.getArticleLikeByUserId(memberId);
     }
 }

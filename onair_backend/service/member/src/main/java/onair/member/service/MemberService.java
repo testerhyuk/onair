@@ -107,8 +107,7 @@ public class MemberService {
 
     public String getNickname(Long memberId) {
         String nicknameByMemberId = memberRepository.findNicknameByMemberId(memberId);
-        System.out.println("get memberId : " + memberId);
-        System.out.println("get nickname : " + nicknameByMemberId);
+
         return memberRepository.findNicknameByMemberId(memberId);
     }
 }

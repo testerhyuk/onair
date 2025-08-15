@@ -82,4 +82,6 @@ public interface ArticleRepository extends JpaRepository<Article, Long> {
                                                      @Param("keyword") String keyword,
                                                      @Param("limit") Long limit,
                                                      @Param("lastArticleId") Long lastArticleId);
+
+    List<Article> findAllByUserId(Long userId);
 }

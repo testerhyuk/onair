@@ -87,4 +87,9 @@ public class ArticleController {
 
         return articleService.search(boardId, keyword, pageSize, lastArticleId);
     }
+
+    @GetMapping("/v1/article/member/{userId}")
+    public List<ArticleResponse> getListByUserId(@PathVariable("userId") String userId) {
+        return articleService.readAllByUserId(userId);
+    }
 }

@@ -9,10 +9,10 @@ import java.time.LocalDateTime;
 @Getter
 @ToString
 public class CommentResponse {
-    private Long commentId;
-    private Long articleId;
-    private Long parentCommentId;
-    private Long userId;
+    private String commentId;
+    private String articleId;
+    private String parentCommentId;
+    private String userId;
     private String content;
     private LocalDateTime createdAt;
     private LocalDateTime modifiedAt;
@@ -21,10 +21,10 @@ public class CommentResponse {
     public static CommentResponse from(Comment comment) {
         CommentResponse response = new CommentResponse();
 
-        response.commentId = comment.getCommentId();
-        response.articleId = comment.getArticleId();
-        response.parentCommentId = comment.getParentCommentId();
-        response.userId = comment.getUserId();
+        response.commentId = String.valueOf(comment.getCommentId());
+        response.articleId = String.valueOf(comment.getArticleId());
+        response.parentCommentId = String.valueOf(comment.getParentCommentId());
+        response.userId = String.valueOf(comment.getUserId());
         response.content = comment.getContent();
         response.createdAt = comment.getCreatedAt();
         response.modifiedAt = comment.getModifiedAt();

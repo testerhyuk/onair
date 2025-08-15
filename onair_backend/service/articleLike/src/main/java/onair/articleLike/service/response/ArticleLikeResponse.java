@@ -9,9 +9,9 @@ import java.time.LocalDateTime;
 @Getter
 @ToString
 public class ArticleLikeResponse {
-    private Long articleLikeId;
-    private Long articleId;
-    private Long userId;
+    private String articleLikeId;
+    private String articleId;
+    private String userId;
     private LocalDateTime createdAt;
     private boolean liked;
 
@@ -19,9 +19,9 @@ public class ArticleLikeResponse {
         ArticleLikeResponse response = new ArticleLikeResponse();
 
         if (articleLike != null) {
-            response.articleLikeId = articleLike.getArticleLikeId();
-            response.articleId = articleLike.getArticleId();
-            response.userId = articleLike.getUserId();
+            response.articleLikeId = String.valueOf(articleLike.getArticleLikeId());
+            response.articleId = String.valueOf(articleLike.getArticleId());
+            response.userId = String.valueOf(articleLike.getUserId());
             response.createdAt = articleLike.getCreatedAt();
             response.liked = true;
         } else {

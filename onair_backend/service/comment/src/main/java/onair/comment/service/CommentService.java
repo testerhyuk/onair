@@ -157,4 +157,8 @@ public class CommentService {
                 .map(CommentCount::getArticleCommentCount)
                 .orElse(0L);
     }
+
+    public List<CommentResponse> getCommentByUserId(Long userId) {
+        return commentRepository.findAllByUserId(userId).stream().map(CommentResponse::from).toList();
+    }
 }

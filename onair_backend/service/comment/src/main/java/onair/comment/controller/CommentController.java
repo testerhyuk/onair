@@ -48,4 +48,11 @@ public class CommentController {
     public Long count(@PathVariable("articleId") Long articleId) {
         return commentService.count(articleId);
     }
+
+    @GetMapping("/v1/comment/member/{userId}")
+    public List<CommentResponse> getCommentByUserId(@PathVariable("userId") String userId) {
+        Long memberId = Long.parseLong(userId);
+
+        return commentService.getCommentByUserId(memberId);
+    }
 }

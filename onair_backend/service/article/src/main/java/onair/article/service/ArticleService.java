@@ -177,4 +177,10 @@ public class ArticleService {
 
         return articles.stream().map(ArticleResponse::from).toList();
     }
+
+    public List<ArticleResponse> readAllByUserId(String userId) {
+        Long memberId = Long.parseLong(userId);
+
+        return articleRepository.findAllByUserId(memberId).stream().map(ArticleResponse::from).toList();
+    }
 }
