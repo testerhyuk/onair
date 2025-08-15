@@ -8,6 +8,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ReissueRequest {
-    private Long memberId;
+    private String memberId;
     private String refreshToken;
 }

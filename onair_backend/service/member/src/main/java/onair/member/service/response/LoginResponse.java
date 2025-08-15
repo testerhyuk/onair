@@ -8,8 +8,9 @@ import onair.member.entity.Role;
 @Getter
 @ToString
 public class LoginResponse {
-    private Long memberId;
+    private String memberId;
     private String email;
+    private String nickname;
     private String accessToken;
     private String refreshToken;
     private String tokenType;
@@ -18,8 +19,9 @@ public class LoginResponse {
     public static LoginResponse of(Member member, String accessToken, String refreshToken) {
         LoginResponse response = new LoginResponse();
 
-        response.memberId = member.getMemberId();
+        response.memberId = String.valueOf(member.getMemberId());
         response.email = member.getEmail();
+        response.nickname = member.getNickname();
         response.accessToken = accessToken;
         response.refreshToken = refreshToken;
         response.tokenType = "Bearer ";

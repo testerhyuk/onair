@@ -8,8 +8,8 @@ import lombok.ToString;
 @AllArgsConstructor
 @ToString
 public class CommentCreateRequest {
-    private Long articleId;
-    private Long parentCommentId;
-    private Long userId;
+    private String articleId;
+    private String parentCommentId;
+    private String userId;
     private String content;
 }

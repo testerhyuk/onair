@@ -31,23 +31,29 @@ public class CommentService {
 
     @Transactional
     public CommentResponse create(CommentCreateRequest request) {
+        if (request.getUserId() == null) {
+            throw new IllegalArgumentException("로그인이 필요합니다.");
+        }
+
         Comment parent = findParent(request);
+        Long articleId = Long.parseLong(request.getArticleId());
+        Long userId = Long.parseLong(request.getUserId());
 
         Comment comment = commentRepository.save(
                 Comment.create(
                         snowflake.nextId(),
-                        request.getArticleId(),
+                        articleId,
                         parent == null ? null : parent.getCommentId(),
-                        request.getUserId(),
+                        userId,
                         request.getContent()
                 )
         );
 
-        int result = commentCountRepository.increase(request.getArticleId());
+        int result = commentCountRepository.increase(articleId);
 
         if (result == 0) {
             commentCountRepository.save(
-                    CommentCount.init(request.getArticleId(), 1L)
+                    CommentCount.init(articleId, 1L)
             );
         }
 
@@ -126,11 +132,11 @@ public class CommentService {
     }
 
     private Comment findParent(CommentCreateRequest request) {
-        Long parentCommentId = request.getParentCommentId();
-
-        if (parentCommentId == null) {
+        if (request.getParentCommentId() == null) {
             return null;
         }
+
+        Long parentCommentId = Long.parseLong(request.getParentCommentId());
 
         return commentRepository.findById(parentCommentId)
                 .filter(not(Comment::isDeleted))

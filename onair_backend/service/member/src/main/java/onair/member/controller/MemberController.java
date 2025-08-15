@@ -47,7 +47,7 @@ public class MemberController {
     public ResponseEntity<ReissueResponse> reissueToken(
             @RequestBody ReissueRequest request,
             @CookieValue("refreshToken") String refreshToken) {
-        String newAccessToken = authService.reissueAccessToken(request.getMemberId(), refreshToken);
+        String newAccessToken = authService.reissueAccessToken(Long.valueOf(request.getMemberId()), refreshToken);
 
         ReissueResponse response = new ReissueResponse(newAccessToken);
         return ResponseEntity.ok(response);
@@ -56,5 +56,11 @@ public class MemberController {
     @DeleteMapping("/v1/member/withdraw")
     public void withdraw(@PathVariable("email") String email) {
         memberService.withdraw(email);
+    }
+
+    @GetMapping("/v1/member/nickname/{memberId}")
+    public String getNickname(@PathVariable("memberId") String memberId) {
+        System.out.println("controller memberId : " + memberId);
+        return memberService.getNickname(Long.valueOf(memberId));
     }
 }

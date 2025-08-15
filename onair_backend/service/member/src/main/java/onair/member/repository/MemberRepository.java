@@ -16,4 +16,10 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     Optional<Member> findByEmailAndDeleted(@Param("email") String email);
 
     void deleteAllByDeletedIsTrueAndDeletedAtBefore(LocalDateTime dateTime);
+
+    @Query(
+            value = "SELECT nickname FROM member WHERE member_id = :memberId",
+            nativeQuery = true
+    )
+    String findNicknameByMemberId(@Param("memberId") Long memberId);
 }
