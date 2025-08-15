@@ -11,5 +11,5 @@ public class ArticleImagesUpdateRequest {
     private Long articleId;
     private Long userId;
     private List<String> newImageUrls;
-    private List<String> remainingImageIds;
+    private List<String> remainingImageUrls;
 }

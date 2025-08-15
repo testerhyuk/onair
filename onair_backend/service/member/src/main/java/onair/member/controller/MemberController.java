@@ -34,8 +34,8 @@ public class MemberController {
 
         ResponseCookie refreshTokenCookie = ResponseCookie.from("refreshToken", response.getRefreshToken())
                 .httpOnly(true)
-                .secure(true)
-                .sameSite("Strict")
+                .secure(false)
+                .sameSite("Lax")
                 .path("/")
                 .maxAge(Duration.ofDays(7))
                 .build();
@@ -44,8 +44,10 @@ public class MemberController {
     }
 
     @PostMapping("/v1/member/reissue")
-    public ResponseEntity<ReissueResponse> reissueToken(@RequestBody ReissueRequest request) {
-        String newAccessToken = authService.reissueAccessToken(request.getMemberId(), request.getRefreshToken());
+    public ResponseEntity<ReissueResponse> reissueToken(
+            @RequestBody ReissueRequest request,
+            @CookieValue("refreshToken") String refreshToken) {
+        String newAccessToken = authService.reissueAccessToken(request.getMemberId(), refreshToken);
 
         ReissueResponse response = new ReissueResponse(newAccessToken);
         return ResponseEntity.ok(response);

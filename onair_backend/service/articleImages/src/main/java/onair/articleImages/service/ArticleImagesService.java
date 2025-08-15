@@ -44,7 +44,7 @@ public class ArticleImagesService {
         Long userId = request.getUserId();
 
         List<ArticleImages> currentImages = articleImagesRepository.findByArticleId(articleId);
-        List<String> remainingImages = request.getRemainingImageIds();
+        List<String> remainingImages = request.getRemainingImageUrls();
 
         List<ArticleImages> toDelete = currentImages.stream()
                 .filter(img -> !remainingImages.contains(img.getImagesUrl()))
