@@ -10,12 +10,14 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
     private final JwtProvider jwtProvider;
+    private final HeaderAuthenticationFilter headerAuthenticationFilter;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -31,7 +33,8 @@ public class SecurityConfig {
                                 "/v1/api-docs/**"
                         ).permitAll()
                         .anyRequest().authenticated()
-                ).httpBasic(AbstractHttpConfigurer::disable);
+                ).httpBasic(AbstractHttpConfigurer::disable)
+                .addFilterBefore(headerAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);;
 
         return http.build();
     }

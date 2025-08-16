@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Duration;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -81,16 +82,6 @@ public class MemberService {
     }
 
     @Transactional
-    public MemberUpdateResponse update(String email, MemberUpdateRequest request) {
-        Member member = memberRepository.findByEmailAndDeleted(email).orElseThrow();
-
-        member.update(request.getPassword(), request.getNickname(),
-                request.getZipCode(), request.getAddress(), request.getDetailAddress());
-
-        return MemberUpdateResponse.of(member);
-    }
-
-    @Transactional
     public void withdraw(String email) {
         Member member = memberRepository.findByEmailAndDeleted(email).orElseThrow();
 
@@ -109,5 +100,35 @@ public class MemberService {
         String nicknameByMemberId = memberRepository.findNicknameByMemberId(memberId);
 
         return memberRepository.findNicknameByMemberId(memberId);
+    }
+
+    @Transactional
+    public MemberUpdateResponse updateMember(Long memberId, MemberUpdateRequest request) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new IllegalArgumentException("회원이 존재하지 않습니다."));
+
+        String rawPassword = request.getPassword();
+        String encodedPassword = null;
+
+        if (rawPassword != null && !rawPassword.isBlank()) {
+            encodedPassword = passwordEncoder.encode(rawPassword);
+        }
+
+        member.update(
+                request.getPassword(),
+                request.getNickname(),
+                request.getZipCode(),
+                request.getAddress(),
+                request.getDetailAddress()
+        );
+
+        return MemberUpdateResponse.of(member);
+    }
+
+    @Transactional
+    public MemberUpdateResponse getMemberInfo(Long memberId) {
+        Member member = memberRepository.findById(memberId).orElseThrow();
+
+        return MemberUpdateResponse.of(member);
     }
 }

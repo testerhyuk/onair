@@ -4,9 +4,11 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import onair.member.service.MemberService;
 import onair.member.service.request.LoginRequest;
+import onair.member.service.request.MemberUpdateRequest;
 import onair.member.service.request.ReissueRequest;
 import onair.member.service.request.SignUpRequest;
 import onair.member.service.response.LoginResponse;
+import onair.member.service.response.MemberUpdateResponse;
 import onair.member.service.response.ReissueResponse;
 import onair.member.service.response.SignUpResponse;
 import onair.member.service.token.AuthService;
@@ -62,5 +64,23 @@ public class MemberController {
     public String getNickname(@PathVariable("memberId") String memberId) {
         System.out.println("controller memberId : " + memberId);
         return memberService.getNickname(Long.valueOf(memberId));
+    }
+
+    @GetMapping("/v1/member/info/{memberId}")
+    public MemberUpdateResponse getMemberInfo(
+            @PathVariable("memberId") String memberId) {
+        Long member = Long.parseLong(memberId);
+
+        return memberService.getMemberInfo(member);
+    }
+
+    @PutMapping("/v1/member/modify/{memberId}")
+    public MemberUpdateResponse updateMember(
+            @PathVariable("memberId") String memberId,
+            @RequestBody MemberUpdateRequest request
+            ) {
+        Long member = Long.parseLong(memberId);
+
+        return memberService.updateMember(member, request);
     }
 }
