@@ -2,8 +2,7 @@ import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import type { RootState } from "../redux/store";
 import { useNavigate } from "react-router";
-import { getArticlesByUserId, getArticleImages } from "../api/articleApi";
-import { getLikedArticlesByUserId } from "../api/articleApi";
+import { getArticlesByUserId, getArticleImages, getOne, getLikedArticlesByUserId } from "../api/articleApi";
 import { getCommentsByUserId, type CommentResponse } from "../api/commentApi";
 
 const MyPageComponent = () => {
@@ -39,11 +38,33 @@ const MyPageComponent = () => {
 
   // 내가 좋아요한 게시글
   useEffect(() => {
-    if (memberId) {
-      getLikedArticlesByUserId(memberId)
-        .then((articles) => setLikedArticles(articles))
-        .catch((err) => console.error("좋아요 게시글 불러오기 실패", err));
-    }
+    const fetchLikedArticles = async () => {
+      if (!memberId) return;
+
+      try {
+        const likes = await getLikedArticlesByUserId(memberId);
+
+        const articlesWithImages = await Promise.all(
+          likes.map(async (like) => {
+            // 각 좋아요 게시글 실제 데이터 가져오기
+            const article = await getOne(String(like.articleId));
+            const images = await getArticleImages(String(like.articleId));
+            return {
+              articleId: like.articleId,
+              title: article?.title ?? "제목 없음",
+              imageUrl: images[0] || "/gray-background.png",
+            };
+          })
+        );
+
+        setLikedArticles(articlesWithImages);
+      } catch (err) {
+        console.error("좋아요 게시글 불러오기 실패", err);
+        setLikedArticles([]);
+      }
+    };
+
+    fetchLikedArticles();
   }, [memberId]);
 
   // 내가 단 댓글
@@ -149,7 +170,9 @@ const MyPageComponent = () => {
                     alt={article.title}
                     className="w-full h-[120px] object-cover rounded-sm select-none pointer-events-none"
                   />
-                  <h4 className="mt-2 text-base break-words select-none">{article.title}</h4>
+                  <h4 className="mt-2 text-base truncate select-none">
+                    {article.title.length > 25 ? article.title.slice(0, 15) + "..." : article.title}
+                  </h4>
                 </div>
               ))}
             </div>
@@ -180,7 +203,9 @@ const MyPageComponent = () => {
                 alt={article.title}
                 className="w-full h-[120px] object-cover rounded-sm select-none pointer-events-none"
               />
-              <h4 className="mt-2 text-base break-words select-none">{article.title}</h4>
+              <h4 className="mt-2 text-base break-words select-none">
+                {article.title.length > 15 ? article.title.slice(0, 15) + "..." : article.title}
+              </h4>
             </div>
           ))}
         </div>
