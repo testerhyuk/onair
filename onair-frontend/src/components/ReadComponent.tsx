@@ -16,6 +16,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faHeart as solidHeart } from "@fortawesome/free-solid-svg-icons";
 import { faHeart as regularHeart } from "@fortawesome/free-regular-svg-icons";
 import CommentComponent from "./CommentComponent";
+import SummaryComponent from "./SummaryComponent";
 
 export interface ImageData {
   id: string;   // React key 용
@@ -126,7 +127,7 @@ function ReadComponent({ articleId }: { articleId: string }) {
     // 2. 게시글 삭제
     await deleteArticle(articleId);
 
-    alert("게시글과 이미지가 삭제되었습니다.");
+    alert("게시글이 삭제되었습니다.");
     navigate("/"); // 목록 페이지로 이동
   } catch (err) {
     console.error("삭제 실패:", err);
@@ -202,6 +203,7 @@ function ReadComponent({ articleId }: { articleId: string }) {
         ))}
         <p>{content}</p>
       </section>
+      <SummaryComponent articleId={articleId} />
       <CommentComponent articleId={articleId} />
     </article>
   );

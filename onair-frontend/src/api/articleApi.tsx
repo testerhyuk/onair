@@ -10,6 +10,43 @@ export interface ArticleImage {
   imagesUrl: string;
 }
 
+export const getArticleSummary = async (articleId: string): Promise<string> => {
+  const token = localStorage.getItem("accessToken");
+  if (!token) throw new Error("로그인이 필요합니다");
+
+  try {
+    const res = await axios.get(`${API_SERVER_HOST}/v1/article-summary/${articleId}`, {
+      headers: { Authorization: `Bearer ${token}` },
+      withCredentials: true,
+    });
+    return res.data.summary; // { summary: "..." } 형태로 반환
+  } catch (err: any) {
+    console.error("요약 조회 실패", err);
+    return "";
+  }
+};
+
+export const saveArticleSummary = async (articleId: string, summary: string) => {
+  const token = localStorage.getItem("accessToken");
+  if (!token) throw new Error("로그인이 필요합니다");
+
+  try {
+    await axios.post(
+      `${API_SERVER_HOST}/v1/article-summary`,
+      { articleId, summary },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        withCredentials: true,
+      }
+    );
+  } catch (err: any) {
+    console.error("요약 저장 실패", err);
+  }
+};
+
 export const getLikedArticlesByUserId = async (userId: string): Promise<Article[]> => {
   const token = localStorage.getItem("accessToken");
   if (!token) throw new Error("로그인이 필요합니다");

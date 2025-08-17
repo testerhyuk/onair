@@ -1,7 +1,8 @@
 // components/WriteComponent.tsx
 import { useRef, useState } from "react";
-import { createArticleApi } from "../api/articleApi";
+import { createArticleApi, saveArticleSummary } from "../api/articleApi";
 import { useNavigate } from "react-router";
+import axios from "axios";
 
 const categories = ["정치", "경제", "연예", "세계", "사회", "생활/문화", "IT", "과학"];
 
@@ -65,6 +66,10 @@ const WriteComponent: React.FC = () => {
         const uploadedImageUrls = urls.map(u => u.split("?")[0]);
         await createArticleApi.saveImageMeta({ articleId, userId, imageUrls: uploadedImageUrls });
       }
+
+      // const aiRes = await axios.post("http://localhost:8000/summarize", { text: contentText });
+      // const aiSummary = aiRes.data.summary;
+      // await saveArticleSummary(articleId, aiSummary);
 
       alert("작성 완료!");
       editorRef.current.innerText = "";
