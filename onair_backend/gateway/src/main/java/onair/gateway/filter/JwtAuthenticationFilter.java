@@ -40,7 +40,8 @@ public class JwtAuthenticationFilter implements GlobalFilter, Ordered {
                 "/v1/comment/infinite-scroll",
                 "/v1/article-images/**",
                 "/v1/article-like/**",
-                "/v1/member/nickname/**"
+                "/v1/member/nickname/**",
+                "/v1/article-summary/**"
         );
 
         List<String> allMethodWhiteList = List.of(

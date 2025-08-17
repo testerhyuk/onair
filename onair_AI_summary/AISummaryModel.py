@@ -1,67 +1,61 @@
 import pandas as pd
 from datasets import Dataset
-from transformers import PreTrainedTokenizerFast
+from transformers import BartForConditionalGeneration, Trainer, TrainingArguments, PreTrainedTokenizerFast
 import torch
-from transformers import BartForConditionalGeneration, Trainer, TrainingArguments
+import gc
+import os
 
-training_path = '/content/drive/MyDrive/문서요약 텍스트/Training/train_original.json'
-validation_path = '/content/drive/MyDrive/문서요약 텍스트/Validation/valid_original.json'
+os.makedirs("C:/Users/Hyuk/Desktop/summary", exist_ok=True)
+
+# 1) GPU 확인
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+print("Using device:", device)
+
+# 2) JSON 파일 불러오기
+training_path = 'C:/Users/Hyuk/Desktop/문서요약 텍스트/Training/train_original.json'
+validation_path = 'C:/Users/Hyuk/Desktop/문서요약 텍스트/Validation/valid_original.json'
 
 df_train = pd.read_json(training_path)
 df_valid = pd.read_json(validation_path)
 
+# 3) 데이터 샘플링 (학습 시간 단축)
+df_train = df_train.sample(n=100000, random_state=42)
+df_valid = df_valid.sample(n=10000, random_state=42)
+
+# 4) 전처리 함수
 def preprocess_dataframe(df):
     sources = []
     targets = []
-    
     for doc in df['documents']:
         try:
-            # 문장 리스트 추출
             sentences = [s['sentence'] for para in doc['text'] for s in para]
             source_text = ' '.join(sentences).strip()
-
-            # 요약문 추출 (가장 첫 번째 항목)
             summary = doc['abstractive'][0].strip() if doc['abstractive'] else ''
-
             if source_text and summary:
                 sources.append(source_text)
                 targets.append(summary)
         except Exception as e:
             print(f"Error processing document ID {doc.get('id', 'N/A')}: {e}")
-    
     return pd.DataFrame({'source': sources, 'target': targets})
 
-
-# 전처리
 train_ready = preprocess_dataframe(df_train)
 valid_ready = preprocess_dataframe(df_valid)
 
-# 저장
-train_ready.to_csv('/content/drive/MyDrive/문서요약 텍스트/Training/train.tsv', sep='\t', encoding='utf-8', index=False)
-valid_ready.to_csv('/content/drive/MyDrive/문서요약 텍스트/Validation/valid.tsv', sep='\t', encoding='utf-8', index=False)
+# 5) Dataset 생성
+dataset_train = Dataset.from_pandas(train_ready)
+dataset_valid = Dataset.from_pandas(valid_ready)
 
-training_path = '/content/drive/MyDrive/문서요약 텍스트/Training/train.tsv'
-validation_path = '/content/drive/MyDrive/문서요약 텍스트/Validation/valid.tsv'
-
-df_train = pd.read_csv(training_path, sep='\t')
-df_valid = pd.read_csv(validation_path, sep='\t')
-
-# 필요한 컬럼만 사용
-dataset_train = Dataset.from_pandas(df_train[['source', 'target']])
-dataset_valid = Dataset.from_pandas(df_valid[['source', 'target']])
-
-# 컬럼명 변경
 dataset_train = dataset_train.rename_columns({'source': 'text', 'target': 'summary'})
 dataset_valid = dataset_valid.rename_columns({'source': 'text', 'target': 'summary'})
 
-# 셔플
 dataset_train = dataset_train.shuffle(seed=42)
 dataset_valid = dataset_valid.shuffle(seed=42)
 
-tokenizer = PreTrainedTokenizerFast.from_pretrained("gogamza/kobart-base-v2")
+# 6) 토크나이저
+tokenizer = PreTrainedTokenizerFast.from_pretrained("gogamza/kobart-summarization")
 
-max_input_length = 512
-max_target_length = 128
+max_input_length = 192
+max_target_length = 64
 
 def preprocess_function(examples):
     inputs = tokenizer(
@@ -70,60 +64,45 @@ def preprocess_function(examples):
         padding="max_length",
         truncation=True,
     )
-
-    with tokenizer.as_target_tokenizer():
-        labels = tokenizer(
-            examples["summary"],
-            max_length=max_target_length,
-            padding="max_length",
-            truncation=True,
-        )
-
+    labels = tokenizer(
+        examples["summary"],
+        max_length=max_target_length,
+        padding="max_length",
+        truncation=True,
+    )
     inputs["labels"] = labels["input_ids"]
     return inputs
 
 
-model = BartForConditionalGeneration.from_pretrained('gogamza/kobart-base-v2')
 
+def clear_memory():
+    gc.collect()
+    torch.cuda.empty_cache()
 
-# training_args = TrainingArguments(
-#     output_dir='./kobart-news-summarization',
-#     num_train_epochs=3,
-#     per_device_train_batch_size=4,
-#     per_device_eval_batch_size=4,
-#     eval_strategy='steps',
-#     eval_steps=500,
-#     save_steps=1000,
-#     save_total_limit=2,
-#     logging_dir='./logs',
-#     logging_steps=100,
-#     learning_rate=5e-5,
-#     weight_decay=0.01,
-#     save_strategy='steps',
-#     load_best_model_at_end=True,
-#     metric_for_best_model='loss',
-#     greater_is_better=False,
-#     report_to='none',
-# )
+tokenized_train = dataset_train.map(preprocess_function, batched=True, remove_columns=['text', 'summary'])
+tokenized_valid = dataset_valid.map(preprocess_function, batched=True, remove_columns=['text', 'summary'])
 
+# 7) 모델 로드
+model = BartForConditionalGeneration.from_pretrained('gogamza/kobart-summarization').to(device)
+
+# 8) TrainingArguments
 training_args = TrainingArguments(
-    output_dir="./kobart-summary-fast",
-    num_train_epochs=1,                          
-    per_device_train_batch_size=2,               
-    per_device_eval_batch_size=2,
-    gradient_accumulation_steps=2,               
-    eval_strategy="steps",                 
-    eval_steps=100,
-    save_steps=200,
-    logging_steps=50,
-    save_total_limit=1,                          
-    fp16=True,                                   
-    report_to="none",                            
-    load_best_model_at_end=True,
-    metric_for_best_model="loss"
+    output_dir="C:/Users/Hyuk/Desktop/summary",
+    num_train_epochs=2,
+    per_device_train_batch_size=8,
+    per_device_eval_batch_size=8,
+    gradient_accumulation_steps=2,
+    evaluation_strategy="steps",
+    eval_steps=5000,
+    logging_steps=500,
+    fp16=True,
+    load_best_model_at_end=False,
+    metric_for_best_model="loss",
+    report_to="none",
+    save_strategy="no"
 )
 
-
+# 9) Trainer
 trainer = Trainer(
     model=model,
     args=training_args,
@@ -132,4 +111,7 @@ trainer = Trainer(
     tokenizer=tokenizer,
 )
 
+# # 10) 학습 시작
 trainer.train()
+model.save_pretrained("C:/Users/Hyuk/Desktop/summary/final_model")
+tokenizer.save_pretrained("C:/Users/Hyuk/Desktop/summary/final_model")

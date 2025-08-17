@@ -1,6 +1,7 @@
 package onair.articlesummary.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import onair.articlesummary.entity.ArticleSummary;
 import onair.articlesummary.repository.ArticleSummaryRepository;
 import onair.articlesummary.service.response.ArticleSummaryResponse;
@@ -12,6 +13,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
+@Log4j2
 public class ArticleSummaryService {
     private final ArticleSummaryRepository articleSummaryRepository;
     private final Snowflake snowflake = new Snowflake();
@@ -29,8 +31,11 @@ public class ArticleSummaryService {
 
     @Transactional(readOnly = true)
     public ArticleSummaryResponse read(Long articleId) {
-        ArticleSummary articleSummary = articleSummaryRepository.findByArticleId(articleId).orElseThrow();
-
-        return ArticleSummaryResponse.from(articleSummary);
+        return articleSummaryRepository.findByArticleId(articleId)
+                .map(ArticleSummaryResponse::from)
+                .orElseGet(() -> {
+                    log.info("요약 데이터 불러오는 중...: articleId={}", articleId);
+                    return null;
+                });
     }
 }
