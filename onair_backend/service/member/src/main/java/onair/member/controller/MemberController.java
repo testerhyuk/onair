@@ -2,6 +2,7 @@ package onair.member.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import onair.jwt.JwtProvider;
 import onair.member.service.MemberService;
 import onair.member.service.request.LoginRequest;
 import onair.member.service.request.MemberUpdateRequest;
@@ -15,6 +16,7 @@ import onair.member.service.token.AuthService;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.Duration;
@@ -24,6 +26,7 @@ import java.time.Duration;
 public class MemberController {
     private final MemberService memberService;
     private final AuthService authService;
+    private final JwtProvider jwtProvider;
 
     @PostMapping("/v1/member/signup")
     public SignUpResponse signup(@RequestBody @Valid SignUpRequest request) {
@@ -56,7 +59,10 @@ public class MemberController {
     }
 
     @DeleteMapping("/v1/member/withdraw")
-    public void withdraw(@PathVariable("email") String email) {
+    public void withdraw(@RequestHeader("Authorization") String authHeader) {
+        String token = authHeader.replace("Bearer ", "");
+        String email = jwtProvider.getEmailFromToken(token);
+
         memberService.withdraw(email);
     }
 

@@ -22,6 +22,6 @@ public class AuthService {
 
         Member member = memberRepository.findById(memberId).orElseThrow();
 
-        return jwtProvider.generateAccessToken(String.valueOf(memberId), member.getRole().name());
+        return jwtProvider.generateAccessToken(String.valueOf(memberId), member.getEmail(), member.getRole().name());
     }
 }

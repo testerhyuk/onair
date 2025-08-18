@@ -81,7 +81,7 @@ export default function ListComponent() {
                 className="w-full h-full object-cover"
               />
             ) : (
-              <div className="w-full h-full bg-gray-100" />
+              <div className="w-full h-full bg-white-100" />
             )}
           </div>
 

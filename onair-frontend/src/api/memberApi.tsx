@@ -40,6 +40,18 @@ export interface LoginResponse {
   role: "USER" | "REPORTER"
 }
 
+export const withdrawMember = async () => {
+  const token = localStorage.getItem("accessToken");
+  const res = await axios.delete(`${memberPrefix}/withdraw`, {
+    headers: {
+      Authorization: `Bearer ${token}`
+    },
+    withCredentials: true,
+  });
+
+  return res.data
+}
+
 export const getMemberById = async (memberId: string) => {
   const token = localStorage.getItem("accessToken");
   const res = await axios.get(`${memberPrefix}/info/${memberId}`, {

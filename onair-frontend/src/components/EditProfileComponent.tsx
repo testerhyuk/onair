@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
-import { getMemberById, updateMember } from "../api/memberApi";
+import { getMemberById, updateMember, withdrawMember } from "../api/memberApi";
 import { useDispatch } from "react-redux";
-import { updateProfile } from "../redux/authSlice";
+import { logout, updateProfile } from "../redux/authSlice";
 
 interface MemberUpdateForm {
   password?: string;
@@ -83,7 +83,13 @@ export default function EditProfileComponent() {
       });
       dispatch(updateProfile({nickname: form.nickname}))
       alert("회원 정보가 수정되었습니다.");
-      navigate("/mypage");
+      dispatch(logout());
+          
+      localStorage.removeItem("accessToken");
+      localStorage.removeItem("memberId");
+      localStorage.removeItem("nickname");
+
+      navigate("/");
     } catch (err) {
       console.error(err);
       alert("수정 실패");
@@ -92,101 +98,127 @@ export default function EditProfileComponent() {
     }
   };
 
+  const handleWithdraw = async () => {
+    if (!window.confirm("탈퇴하시면 30일간 재가입이 불가능합니다. 탈퇴하시겠습니까?")) return;
+
+    try {
+      await withdrawMember();
+
+      dispatch(logout())
+
+      localStorage.removeItem("accessToken");
+      localStorage.removeItem("memberId");
+      localStorage.removeItem("nickname");
+
+      alert("회원 탈퇴가 완료되었습니다");
+      navigate("/")
+    } catch (err) {
+      console.log("회원 탈퇴 실패", err);
+      alert("회원 탈퇴에 실패했습니다");
+    }
+  }
+
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="w-full max-w-lg p-6 rounded shadow bg-white"
-    >
-      <h2 className="text-xl font-semibold mb-4">회원 정보 수정</h2>
+    <div>
+      <form
+        onSubmit={handleSubmit}
+        className="w-full max-w-lg p-6 rounded shadow bg-white"
+      >
+        <h2 className="text-xl font-semibold mb-4">회원 정보 수정</h2>
 
-      {/* 비밀번호 */}
-      <div className="mb-3">
-        <label className="block mb-1">비밀번호</label>
-        <input
-          type="password"
-          name="password"
-          value={form.password}
-          onChange={handleChange}
-          className="w-full border px-3 py-1.5 rounded"
-          placeholder="변경할 비밀번호"
-        />
-      </div>
+        {/* 비밀번호 */}
+        <div className="mb-3">
+          <label className="block mb-1">비밀번호</label>
+          <input
+            type="password"
+            name="password"
+            value={form.password}
+            onChange={handleChange}
+            className="w-full border px-3 py-1.5 rounded"
+            placeholder="변경할 비밀번호"
+          />
+        </div>
 
-      {/* 비밀번호 확인 */}
-      <div className="mb-3">
-        <label className="block mb-1">비밀번호 확인</label>
-        <input
-          type="password"
-          name="checkPassword"
-          value={form.checkPassword}
-          onChange={handleChange}
-          className="w-full border px-3 py-1.5 rounded"
-          placeholder="변경할 비밀번호 확인"
-        />
-      </div>
+        {/* 비밀번호 확인 */}
+        <div className="mb-3">
+          <label className="block mb-1">비밀번호 확인</label>
+          <input
+            type="password"
+            name="checkPassword"
+            value={form.checkPassword}
+            onChange={handleChange}
+            className="w-full border px-3 py-1.5 rounded"
+            placeholder="변경할 비밀번호 확인"
+          />
+        </div>
 
-      {/* 닉네임 */}
-      <div className="mb-3">
-        <label className="block mb-1">닉네임</label>
-        <input
-          type="text"
-          name="nickname"
-          value={form.nickname}
-          onChange={handleChange}
-          className="w-full border px-3 py-1.5 rounded"
-        />
-      </div>
-
-      {/* 주소 */}
-      <div className="mb-3">
-        <label className="block mb-1">우편번호 / 주소</label>
-        <div className="flex space-x-2">
+        {/* 닉네임 */}
+        <div className="mb-3">
+          <label className="block mb-1">닉네임</label>
           <input
             type="text"
-            name="zipCode"
-            value={form.zipCode}
-            readOnly
-            className="flex-1 border px-3 py-1.5 rounded"
-            placeholder="우편번호"
+            name="nickname"
+            value={form.nickname}
+            onChange={handleChange}
+            className="w-full border px-3 py-1.5 rounded"
           />
-          <button
-            type="button"
-            onClick={handleAddressSearch}
-            className="bg-gray-200 px-4 rounded hover:bg-gray-300 cursor-pointer"
-          >
-            주소 검색
-          </button>
         </div>
-        <input
-          type="text"
-          name="address"
-          value={form.address}
-          readOnly
-          className="w-full border px-3 py-1.5 rounded mt-2"
-          placeholder="주소"
-        />
-      </div>
 
-      {/* 상세주소 */}
-      <div className="mb-3">
-        <label className="block mb-1">상세주소</label>
-        <input
-          type="text"
-          name="detailAddress"
-          value={form.detailAddress}
-          onChange={handleChange}
-          className="w-full border px-3 py-1.5 rounded"
-        />
-      </div>
+        {/* 주소 */}
+        <div className="mb-3">
+          <label className="block mb-1">우편번호 / 주소</label>
+          <div className="flex space-x-2">
+            <input
+              type="text"
+              name="zipCode"
+              value={form.zipCode}
+              readOnly
+              className="flex-1 border px-3 py-1.5 rounded"
+              placeholder="우편번호"
+            />
+            <button
+              type="button"
+              onClick={handleAddressSearch}
+              className="bg-gray-200 px-4 rounded hover:bg-gray-300 cursor-pointer"
+            >
+              주소 검색
+            </button>
+          </div>
+          <input
+            type="text"
+            name="address"
+            value={form.address}
+            readOnly
+            className="w-full border px-3 py-1.5 rounded mt-2"
+            placeholder="주소"
+          />
+        </div>
 
-      {/* 수정 버튼 */}
-      <button
-        type="submit"
-        disabled={loading}
-        className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600 cursor-pointer"
-      >
-        {loading ? "수정 중..." : "회원 정보 수정"}
-      </button>
-    </form>
+        {/* 상세주소 */}
+        <div className="mb-3">
+          <label className="block mb-1">상세주소</label>
+          <input
+            type="text"
+            name="detailAddress"
+            value={form.detailAddress}
+            onChange={handleChange}
+            className="w-full border px-3 py-1.5 rounded"
+          />
+        </div>
+
+        {/* 수정 버튼 */}
+        <button
+          type="submit"
+          disabled={loading}
+          className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600 cursor-pointer"
+        >
+          {loading ? "수정 중..." : "회원 정보 수정"}
+        </button>
+      </form>
+
+      <button onClick={handleWithdraw}>
+        회원탈퇴
+      </button>    
+    </div>
   );
 }

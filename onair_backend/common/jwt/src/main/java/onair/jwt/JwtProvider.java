@@ -19,9 +19,10 @@ public class JwtProvider {
     private final long accessTokenValidity = 1000 * 60 * 15; // 15분
     private final long refreshTokenValidity = 1000 * 60 * 60 * 24 * 7; // 7일
 
-    public String generateAccessToken(String memberId, String role) {
+    public String generateAccessToken(String memberId, String email, String role) {
         return Jwts.builder()
                 .setSubject(memberId)
+                .claim("email", email)
                 .claim("role", role)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + accessTokenValidity))
@@ -71,5 +72,14 @@ public class JwtProvider {
                 .parseClaimsJws(token)
                 .getBody()
                 .get("role", String.class);
+    }
+
+    public String getEmailFromToken(String token) {
+        return Jwts.parserBuilder()
+                .setSigningKey(jwtSecretKey.getBytes(StandardCharsets.UTF_8))
+                .build()
+                .parseClaimsJws(token)
+                .getBody()
+                .get("email", String.class);
     }
 }
